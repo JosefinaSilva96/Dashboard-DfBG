@@ -500,9 +500,7 @@ server <- function(input, output, session) {
           tags$i(class = "bi bi-check-circle"),
           "Claude API detected — the brief will include LLM-written analysis.")
     } else {
-      div(class = "small text-muted mb-2",
-          "No ANTHROPIC_API_KEY set — the brief will use rule-based narrative. ",
-          "Set the key and restart R to enable LLM analysis.")
+      NULL
     }
   })
 

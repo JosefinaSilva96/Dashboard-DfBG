@@ -870,15 +870,6 @@ text_cards_ui <- function(data, country_name, qlist = AGENCY_QUESTIONS,
       shiny::tags$span(style = "font-size:13px; color:#888;",
                        paste0("open-text responses \u00b7 ", family_label, " questionnaire"))
     ),
-    if (!have_api_key()) {
-      shiny::div(
-        style = paste0("font-size:12px; color:#a35b00; background:#fff6e5; ",
-                       "border:1px solid #ffe1a8; border-radius:6px; ",
-                       "padding:6px 10px; margin-bottom:12px;"),
-        "Automatic translation to English is off (no ANTHROPIC_API_KEY set) \u2014 ",
-        "responses below are shown in their original language."
-      )
-    },
     shiny::div(
       style = paste0("display:grid; grid-template-columns:",
                      "repeat(auto-fit, minmax(300px, 1fr)); gap:14px;"),
