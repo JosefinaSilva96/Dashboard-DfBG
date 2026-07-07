@@ -163,7 +163,10 @@ ui <- page_sidebar(
         p("If the dashboard isn\u2019t working as expected, please contact:"),
         p(tags$strong("Josefina Silva Fuentealba"), br(),
           tags$a(href = "mailto:jsilvafuentealba@worldbank.org",
-                 "jsilvafuentealba@worldbank.org"))
+                 "jsilvafuentealba@worldbank.org")),
+        p(tags$strong("AI and Data for Better Governance team"), br(),
+          tags$a(href = "mailto:dataforbettergovernance@worldbank.org",
+                 "dataforbettergovernance@worldbank.org"))
       ))
     ),
     nav_panel(
