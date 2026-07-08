@@ -374,7 +374,7 @@ ui <- page_sidebar(
             h4(style = "margin:0; font-weight:700; color:#1a1a1a;",
                "AI Use Cases \u2014 Six Categories Across DfBG Questionnaires"),
             tags$span(style = "font-size:12px; color:#888;",
-                      "Source: DfBG Agency & Manager Questionnaires"),
+                      "Source: DfBG Agency, Manager & Systems Questionnaires"),
             uiOutput("uc_region_label", inline = TRUE)
           ),
           uiOutput("uc_grid")
@@ -813,6 +813,15 @@ server <- function(input, output, session) {
         idx
       }
 
+      # Limite de items por tarjeta: algunas categorias (ej. Tax) tienen
+      # muchas mas economias que otras (ej. Infra), y eso desbalanceaba
+      # mucho la imagen exportada (columnas larguisimas vs. cortas). Con un
+      # tope parejo, todas las tarjetas quedan de un tamaño mas comparable.
+      MAX_ITEMS_PER_CARD <- 12
+      n_total_matches <- length(keep_idx)
+      n_extra <- max(0, n_total_matches - MAX_ITEMS_PER_CARD)
+      keep_idx <- utils::head(keep_idx, MAX_ITEMS_PER_CARD)
+
       lis <- if (length(keep_idx) == 0) {
         msg <- if (is.null(items) || length(items) == 0)
           "No entries yet \u2014 use the form above to add one."
@@ -842,6 +851,13 @@ server <- function(input, output, session) {
             )
           )
         })
+      }
+      if (n_extra > 0) {
+        lis <- c(lis, list(tags$li(
+          style = "color:#888; font-style:italic; list-style:none; margin-left:-18px; margin-top:4px;",
+          paste0("+ ", n_extra, " more econom", if (n_extra == 1) "y" else "ies",
+                " reported examples in this category")
+        )))
       }
       div(
         style = paste0("background:#fff; border:1px solid #e0e4ea; ",
