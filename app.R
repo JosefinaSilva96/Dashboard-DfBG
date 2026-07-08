@@ -168,12 +168,12 @@ ui <- page_sidebar(
         hr(),
         h5("Questions or issues?"),
         p("If the dashboard isn\u2019t working as expected, please contact:"),
+        p(tags$strong("AI and Data for Better Governance team"), br(),
+          tags$a(href = "mailto:dataforbettergovernance@worldbank.org",
+                 "dataforbettergovernance@worldbank.org")), 
         p(tags$strong("Josefina Silva Fuentealba"), br(),
           tags$a(href = "mailto:jsilvafuentealba@worldbank.org",
                  "jsilvafuentealba@worldbank.org")),
-        p(tags$strong("AI and Data for Better Governance team"), br(),
-          tags$a(href = "mailto:dataforbettergovernance@worldbank.org",
-                 "dataforbettergovernance@worldbank.org"))
       ))
     ),
     nav_panel(
@@ -209,9 +209,7 @@ ui <- page_sidebar(
                   "for the selected economy."),
           tags$li("Each economy weighs 1/n in the income-group average, ",
                   "matching the original R Markdown analysis.")
-        ),
-        p(class = "text-muted",
-          "Data: build_dfbg_database_EN.R outputs (Agency / Managers / Systems).")
+        )
       ))
     ),
     nav_panel(
