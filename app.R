@@ -601,6 +601,15 @@ server <- function(input, output, session) {
                         !is.null(input$scope) && input$scope == "compare"
         show_table <- q$type == "single" && use_sectoral
 
+        # Objeto ggplot: se calcula UNA vez y se reutiliza para mostrarlo,
+        # calcular el alto dinamico (segun cuantas categorias tenga) y
+        # exportarlo a PNG — asi no se recalcula 3 veces ni queda un alto
+        # fijo que aplaste las etiquetas cuando hay muchas categorias.
+        plot_obj <- reactive({
+          if (q$type == "text" || show_table) return(NULL)
+          make_plot(plot_data(), q, input$country, scope = input$scope, base = base_fam())
+        })
+
         output[[paste0("mod_body_", ii)]] <- renderUI({
           if (q$type == "text") {
             tbl <- make_text(plot_data(), q, input$country, base = base_fam())
@@ -609,8 +618,15 @@ server <- function(input, output, session) {
           tbl_ui <- make_table_ui(plot_data(), q, input$country,
                                   scope = input$scope, base = base_fam())
           if (!is.null(tbl_ui)) return(tbl_ui)
+
+          gg <- plot_obj()
+          n_items <- attr(gg, "n_items")
+          if (is.null(n_items)) n_items <- length(q$levels %||% character(0))
+          if (n_items == 0) n_items <- 6
+          px_height <- max(320, min(900, round(90 + n_items * 34)))
+
           tagList(
-            plotOutput(paste0("mod_plot_", ii), height = "380px"),
+            plotOutput(paste0("mod_plot_", ii), height = paste0(px_height, "px")),
             div(style = "text-align:right; margin-top:6px;",
                 downloadButton(paste0("mod_dl_", ii), "Download chart (PNG)",
                                class = "btn-outline-secondary btn-sm"))
@@ -618,8 +634,7 @@ server <- function(input, output, session) {
         })
 
         output[[paste0("mod_plot_", ii)]] <- renderPlot({
-          if (q$type == "text" || show_table) return(NULL)
-          make_plot(plot_data(), q, input$country, scope = input$scope, base = base_fam())
+          plot_obj()
         })
 
         output[[paste0("mod_dl_", ii)]] <- downloadHandler(
@@ -627,14 +642,14 @@ server <- function(input, output, session) {
             paste0("dfbg_", tolower(gsub("[^A-Za-z]+", "_", input$country)), "_", qid, ".png")
           },
           content = function(file) {
-            p <- if (q$type == "text" || show_table) {
-              empty_plot("", "No chart to export")
-            } else {
-              make_plot(plot_data(), q, input$country, scope = input$scope, base = base_fam())
-            }
+            p <- plot_obj()
             if (is.null(p)) p <- empty_plot("", "No chart to export")
+            n_items <- attr(p, "n_items")
+            if (is.null(n_items)) n_items <- length(q$levels %||% character(0))
+            if (n_items == 0) n_items <- 6
+            h_in <- max(4.2, min(11, 1.6 + n_items * 0.55))
             ggplot2::ggsave(filename = file, plot = p, device = "png",
-                            width = 10, height = 6.5, dpi = 200, bg = "white")
+                            width = 10, height = h_in, dpi = 200, bg = "white")
           }
         )
 
