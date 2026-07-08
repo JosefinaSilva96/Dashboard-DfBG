@@ -72,8 +72,15 @@ ui <- page_sidebar(
   theme = wb_theme,
 
   # Librería para exportar el cuadro de Use Cases como PNG (rasteriza el DOM).
+  # OJO: se sirve DESDE la carpeta www/ del proyecto (no desde un CDN externo)
+  # porque en redes internas/corporativas (ej. dominios *-int.worldbank.org)
+  # suelen bloquearse los CDN externos (cdnjs, unpkg, etc.), lo que hacía que
+  # html2canvas nunca cargara y el botón "Download as PNG" tirara el error
+  # "Could not capture the image". Shiny sirve automáticamente cualquier
+  # archivo dentro de www/ en la raíz de la app, así que esto funciona igual
+  # con o sin acceso a internet.
   tags$head(
-    tags$script(src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"),
+    tags$script(src = "html2canvas.min.js"),
     tags$script(HTML(
       "Shiny.addCustomMessageHandler('uc_download_png', function(msg) {",
       "  var node = document.getElementById('uc_capture');",
