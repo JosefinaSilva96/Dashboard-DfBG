@@ -757,6 +757,26 @@ server <- function(input, output, session) {
               paste0("\u00b7 Region: ", rf))
   })
 
+  # Recorta el texto de cada caso a maximo 2 oraciones (con un limite de
+  # caracteres de respaldo por si viene una sola oracion larguisima sin punto),
+  # para que las tarjetas no se hagan enormes, sobre todo en "All regions".
+  truncate_uc_text <- function(t, max_sentences = 2, max_chars = 200) {
+    t <- trimws(t)
+    parts <- unlist(stringr::str_split(t, "(?<=[.!?])\\s+"))
+    parts <- parts[nzchar(parts)]
+    if (length(parts) > max_sentences) {
+      short <- paste(parts[seq_len(max_sentences)], collapse = " ")
+    } else {
+      short <- t
+    }
+    if (nchar(short) > max_chars) {
+      short <- paste0(substr(short, 1, max_chars - 1), "\u2026")
+    } else if (length(parts) > max_sentences) {
+      short <- paste0(short, if (!grepl("[.!?\u2026]$", short)) "\u2026" else "")
+    }
+    short
+  }
+
   output$uc_grid <- renderUI({
     selected_country <- input$country
     region_filter <- input$uc_region %||% "All regions"
@@ -792,7 +812,7 @@ server <- function(input, output, session) {
             tags$span(style = paste0("font-weight:700; color:", meta$color, ";"),
                       it$country),
             tags$span(" \u2014 "),
-            tags$span(it$text),
+            tags$span(title = it$text, truncate_uc_text(it$text)),
             tags$button(
               type = "button",
               class = "btn btn-link uc-delete-btn",
