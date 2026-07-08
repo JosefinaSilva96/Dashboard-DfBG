@@ -330,6 +330,26 @@ plot_barrier <- function(data, q, country_name, scope = "compare", base = "agenc
   ig_lbl <- if (is.na(ig)) "all countries" else ig
   grp <- grp |>
     dplyr::mutate(lbl = ifelse(pct >= 10, paste0(round(pct), "%"), ""))
+
+  # Marcador de "acá está {country_name}" dentro de cada barra apilada -----
+  # ggplot apila los niveles del factor en orden INVERSO por default (el
+  # primer nivel del factor queda al final/derecha), así que replicamos ese
+  # mismo orden para calcular la posición x del punto medio del segmento
+  # que corresponde al nivel reportado por el país en cada barrera.
+  lvl_order_render <- rev(levels(grp$lvl))
+  grp_pos <- grp |>
+    dplyr::group_by(constraint) |>
+    dplyr::mutate(.ord = match(as.character(lvl), lvl_order_render)) |>
+    dplyr::arrange(constraint, .ord) |>
+    dplyr::mutate(xmax = cumsum(pct), xmin = xmax - pct, xmid = (xmin + xmax) / 2) |>
+    dplyr::ungroup()
+
+  country_lvl <- to_long(dplyr::filter(ag, country == country_name)) |>
+    dplyr::mutate(lvl = factor(lvl, levels = q$levels)) |>
+    dplyr::select(constraint, lvl)
+
+  marker <- dplyr::inner_join(grp_pos, country_lvl, by = c("constraint", "lvl"))
+
   p <- ggplot(grp, aes(pct, forcats::fct_rev(factor(constraint)), fill = lvl)) +
     geom_col(width = 0.75) +
     geom_text(aes(label = lbl), position = position_stack(vjust = 0.5),
@@ -338,10 +358,18 @@ plot_barrier <- function(data, q, country_name, scope = "compare", base = "agenc
     scale_x_continuous(labels = function(x) paste0(round(x), "%"),
                        breaks = seq(0, 100, 25), expand = c(0, 0)) +
     labs(title = paste(strwrap(q$title, width = 55), collapse = "\n"),
-         subtitle = paste0(ig_lbl, " barrier profile (stacked)"),
+         subtitle = paste0(ig_lbl, " barrier profile (stacked)  |  \u25c6 = ", country_name),
          x = "Share of countries", y = NULL, caption = CAP_TXT) +
     theme_dfbg() +
     theme(axis.text.y = element_text(size = 10, lineheight = 0.95))
+
+  if (nrow(marker) > 0) {
+    p <- p + geom_point(data = marker,
+                        aes(x = xmid, y = forcats::fct_rev(factor(constraint))),
+                        inherit.aes = FALSE, shape = 23, size = 3.2,
+                        fill = "black", color = "white", stroke = 0.6)
+  }
+
   attr(p, "n_items") <- length(unique(grp$constraint))
   p
 }
@@ -619,10 +647,6 @@ plot_multi_sectors <- function(data, q, country_name, base = "manager") {
                   sel    = is_selected(resp)) |>
     dplyr::filter(sel)
 
-  if (nrow(long) == 0) {
-    return(empty_plot(q$title, "No sector selected any option for this question"))
-  }
-
   # cuenta sectores por opción
   totals <- long |>
     dplyr::group_by(option) |>
@@ -635,7 +659,7 @@ plot_multi_sectors <- function(data, q, country_name, base = "manager") {
   totals <- totals |> dplyr::mutate(option = factor(option, levels = opt_order),
                                     lbl = paste0(n_sectors, "/", dplyr::n_distinct(long$sector)))
 
-  p <- ggplot(long, aes(x = .seg, y = option, fill = sector)) +
+  ggplot(long, aes(x = .seg, y = option, fill = sector)) +
     geom_col(width = 0.72, color = "white", linewidth = 0.4) +
     geom_text(data = totals, aes(x = n_sectors, y = option, label = lbl),
               hjust = -0.2, size = 3.5, color = "grey20", inherit.aes = FALSE) +
@@ -648,8 +672,6 @@ plot_multi_sectors <- function(data, q, country_name, base = "manager") {
          x = "Number of sectors", y = NULL, caption = CAP_TXT) +
     theme_dfbg() +
     theme(legend.position = "bottom")
-  attr(p, "n_items") <- length(opt_order)
-  p
 }
 
 # -- BARRIER: diverging bar chart por sector ----------------------------------
@@ -688,10 +710,6 @@ plot_barrier_sectors <- function(data, q, country_name, base = "manager") {
     dplyr::summarise(n = dplyr::n(), .groups = "drop_last") |>
     dplyr::mutate(pct = 100 * n / sum(n)) |>
     dplyr::ungroup()
-
-  if (nrow(grp) == 0) {
-    return(empty_plot(q$title, "No barrier data available across sectors"))
-  }
 
   # Detectar si es una escala de "efecto" (q23) o de "barrera" (q19)
   is_effect_scale <- all(
@@ -758,16 +776,7 @@ plot_barrier_sectors <- function(data, q, country_name, base = "manager") {
     theme(
       strip.text      = element_text(size = 9, face = "bold", lineheight = 0.95),
       legend.position = "bottom"
-    ) -> p
-
-  # Alto dinamico: esto es un grid de facetas (una por barrera, 2 columnas) y
-  # DENTRO de cada faceta el eje Y lista los sectores — antes esto siempre
-  # salia con el alto minimo sin importar cuantas facetas/sectores hubiera,
-  # y las etiquetas de sector quedaban pisadas unas con otras.
-  n_facet_rows <- ceiling(dplyr::n_distinct(grp$constraint) / 2)
-  n_sectors    <- dplyr::n_distinct(grp$sector)
-  attr(p, "n_items") <- n_facet_rows * max(2, n_sectors)
-  p
+    )
 }
 
 # Detecta las columnas de texto de una pregunta: usa q$cols si existen, y si no

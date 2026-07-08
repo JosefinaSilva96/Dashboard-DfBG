@@ -235,16 +235,6 @@ ui <- page_sidebar(
                                 sort(country_choices(DATA)$country)),
                     selected = sort(country_choices(DATA)$country)[1]),
         uiOutput("ig_badge"),
-        hr(),
-        radioButtons("family", "Questionnaire",
-                     choices = c("Agency", "Managers", "Systems"),
-                     selected = "Agency", inline = TRUE),
-        uiOutput("family_hint"),
-        hr(),
-        uiOutput("scope_picker"),
-        uiOutput("sector_picker"),
-        hr(),
-        hr(),
         conditionalPanel(
           condition = "input.country != '' && typeof input.family !== 'undefined'",
           downloadButton("dl_brief", "Download economy brief (.docx)",
@@ -255,8 +245,15 @@ ui <- page_sidebar(
           div(class = "small text-muted",
               "Select an economy and a questionnaire to enable the download.")
         ),
-        br(), br(),
-        uiOutput("api_status")
+        uiOutput("api_status"),
+        hr(),
+        radioButtons("family", "Questionnaire",
+                     choices = c("Agency", "Managers", "Systems"),
+                     selected = "Agency", inline = TRUE),
+        uiOutput("family_hint"),
+        hr(),
+        uiOutput("scope_picker"),
+        uiOutput("sector_picker")
       )
     }
   ),
