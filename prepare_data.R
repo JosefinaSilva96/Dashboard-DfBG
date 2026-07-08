@@ -10,7 +10,7 @@
 CLEAN_DIR <- "C:/Users/wb631166/OneDrive - WBG/Desktop/DfBG/Data/Clean"
 CLASS_XLSX <- "C:/Users/wb631166/OneDrive - WBG/Desktop/DfBG/Data/CLASS_2025_10_07.xlsx" # optional
 
-setwd("C:/WBG/GitHub/DfBG/Shiny")
+setwd("C:/WBG/GitHub/Dashboard-DfBG")
 
 dest <- file.path(getwd(), "data")
 dir.create(dest, showWarnings = FALSE, recursive = TRUE)
