@@ -233,25 +233,22 @@ ui <- page_sidebar(
         selectInput("country", "Economy",
                     choices = c("Select an economy" = "",
                                 sort(country_choices(DATA)$country)),
-                    selected = ""),
+                    selected = sort(country_choices(DATA)$country)[1]),
         uiOutput("ig_badge"),
         hr(),
         radioButtons("family", "Questionnaire",
                      choices = c("Agency", "Managers", "Systems"),
-                     selected = character(0), inline = TRUE),
+                     selected = "Agency", inline = TRUE),
         uiOutput("family_hint"),
         hr(),
         uiOutput("scope_picker"),
         uiOutput("sector_picker"),
         hr(),
-        uiOutput("module_picker"),
         hr(),
         conditionalPanel(
           condition = "input.country != '' && typeof input.family !== 'undefined'",
           downloadButton("dl_brief", "Download economy brief (.docx)",
-                         class = "btn-primary w-100"),
-          div(class = "small text-muted mt-1",
-              "The narrative sections of this brief are AI-generated from survey data and have not been reviewed by World Bank staff.")
+                         class = "btn-primary w-100")
         ),
         conditionalPanel(
           condition = "input.country == '' || typeof input.family === 'undefined'",
@@ -268,26 +265,6 @@ ui <- page_sidebar(
     nav_panel(
       "About the survey",
       card(card_body(
-        h4("About This Dashboard"),
-        p("This dashboard lets you explore the results of the AI and Data for ",
-          "Better Governance Survey economy by economy, compare an economy ",
-          "against the average of its World Bank income group, browse ",
-          "curated examples of AI use cases by region, and generate an ",
-          "automated economy brief summarizing the survey results."),
-        p(tags$em(
-          "The survey responses shown throughout this dashboard reflect the ",
-          "views and self-reported information of the participating ",
-          "governments and respondents. They do not represent the views, ",
-          "position, or endorsement of the World Bank Group, its Board of ",
-          "Executive Directors, or the governments they represent."
-        )),
-        p("This survey was carried out as part of the ",
-          tags$strong("World Development Report 2026: Decoding AI for Development"),
-          ". More information about the report is available at ",
-          tags$a(href = "https://www.worldbank.org/en/publication/wdr2026",
-                 target = "_blank",
-                 "worldbank.org/en/publication/wdr2026"), "."),
-        hr(),
         h4("The AI and Data for Better Governance Survey"),
         p("The AI and Data for Better Governance Survey was designed to ",
           "accomplish the following:"),
@@ -324,8 +301,9 @@ ui <- page_sidebar(
       card(card_body(
         h4("What this dashboard does"),
         p("Pick an economy to explore its questionnaire responses ",
-          "and download an automated economy brief in Word. ",
-          "Use \u201cModule\u201d in the sidebar to switch between groups of charts."),
+          "and download an automated economy brief in Word. In ",
+          tags$strong("Explore charts"), ", scroll down to see all the ",
+          "questionnaire's charts, grouped by module."),
         tags$ul(
           tags$li("Start in the sidebar: choose an ", tags$strong("Economy"),
                   " and a ", tags$strong("Questionnaire"),
@@ -336,11 +314,11 @@ ui <- page_sidebar(
           tags$li("For Managers and Systems, use the ", tags$strong("Sector"),
                   " picker to look at a single sector, or compare all ",
                   "sectors at once."),
-          tags$li("Use \u201cModule\u201d to jump between the sections of the ",
-                  "questionnaire (e.g. \u201cAdoption of AI in Government\u201d, ",
-                  "\u201cBarriers and Risks\u201d) \u2014 all the charts for that ",
-                  "module\u2019s questions are shown together, each with the full ",
-                  "question text and number in a footnote below it."),
+          tags$li("Charts are organized into the ", tags$strong("modules"),
+                  " of the real questionnaire (e.g. \u201cAdoption of AI in ",
+                  "Government\u201d, \u201cBarriers and Risks\u201d) \u2014 just scroll ",
+                  "down to move from one module to the next. Each chart has ",
+                  "a footnote with the full question text and number."),
           tags$li("Each chart can be downloaded as a PNG image using the ",
                   tags$strong("Download chart (PNG)"),
                   " button below it."),
@@ -360,7 +338,6 @@ ui <- page_sidebar(
     nav_panel(
       "Explore charts",
       uiOutput("header_cards"),
-      uiOutput("module_title_ui"),
       uiOutput("module_charts_ui")
     ),
     nav_panel(
@@ -512,18 +489,17 @@ server <- function(input, output, session) {
     }
   })
 
-  # Selector de MODULO (agrupa varias preguntas/graficos juntos)
-  output$module_picker <- renderUI({
-    if (is.null(input$family)) {
-      return(div(class = "small text-muted", "Select a questionnaire above to choose a module."))
-    }
+  # Todos los modulos disponibles para la familia elegida, en el orden real
+  # del cuestionario, cada uno con sus qids ya filtrados a lo que existe en
+  # la base. Ya no se elige un modulo: se muestran TODOS, uno debajo del
+  # otro, con su propio encabezado de seccion (el usuario simplemente
+  # scrollea).
+  family_modules <- reactive({
+    req(input$family)
     ql   <- qlist_fam()
     mods <- modules_for_family(input$family)
-    # solo módulos que tengan al menos 1 pregunta realmente disponible en la base
-    mods <- Filter(function(m) length(intersect(m$qids, names(ql))) > 0, mods)
-    if (length(mods) == 0) return(div(class = "small text-muted", "No modules available."))
-    choices <- vapply(mods, function(m) m$title, character(1))
-    selectInput("module", "Module", choices = choices)
+    mods <- lapply(mods, function(m) list(title = m$title, qids = intersect(m$qids, names(ql))))
+    Filter(function(m) length(m$qids) > 0, mods)
   })
 
   # Data efectiva para graficar:
@@ -550,56 +526,53 @@ server <- function(input, output, session) {
     d2
   })
 
-  # Ids de pregunta (en orden del cuestionario real) del modulo elegido,
-  # intersectados con lo que efectivamente esta disponible en la base.
-  module_qids <- reactive({
-    req(input$family, input$module)
-    ql   <- qlist_fam()
-    mods <- modules_for_family(input$family)
-    m    <- Find(function(x) identical(x$title, input$module), mods)
-    if (is.null(m)) return(character(0))
-    intersect(m$qids, names(ql))
+  # Todos los ids de pregunta, en orden, de TODOS los modulos concatenados
+  # (usado para indexar los outputs dinamicos mod_plot_1, mod_plot_2, ...).
+  all_qids <- reactive({
+    unlist(lapply(family_modules(), function(m) m$qids))
   })
 
-  output$module_title_ui <- renderUI({
-    if (is.null(input$country) || !nzchar(input$country) || is.null(input$family) || is.null(input$module)) {
-      return(NULL)
-    }
-    tags$h5(class = "mt-1",
-            input$module,
-            tags$span(class = "text-muted small",
-                     paste0(" \u00b7 ", input$family,
-                            if (input$family != "Agency" && !is.null(input$sector)) paste0(" \u00b7 ", input$sector) else "")))
-  })
-
-  # Panel principal: TODOS los graficos del modulo elegido, uno debajo del
-  # otro, cada uno con su propio footnote (numero de pregunta real + texto
-  # completo tal cual el cuestionario).
+  # Panel principal: todos los modulos del cuestionario, cada uno con su
+  # encabezado de seccion y TODOS sus graficos, uno debajo del otro. El
+  # usuario scrollea en vez de elegir un modulo puntual.
   output$module_charts_ui <- renderUI({
     if (is.null(input$country) || !nzchar(input$country) || is.null(input$family)) {
       return(div(class = "text-muted p-4",
                  "Select an economy and a questionnaire from the sidebar to see charts."))
     }
-    qids <- module_qids()
-    if (length(qids) == 0) {
-      return(div(class = "text-muted p-4", "No questions available for this module."))
+    mods <- family_modules()
+    if (length(mods) == 0) {
+      return(div(class = "text-muted p-4", "No questions available for this questionnaire."))
     }
-    tagList(lapply(seq_along(qids), function(i) {
-      div(
-        class = "card mb-3",
-        div(class = "card-header", textOutput(paste0("mod_title_", i))),
-        div(class = "card-body", uiOutput(paste0("mod_body_", i))),
-        div(class = "card-footer", uiOutput(paste0("mod_foot_", i)))
+    idx <- 0
+    tagList(lapply(mods, function(m) {
+      cards <- lapply(m$qids, function(qid) {
+        idx <<- idx + 1
+        i <- idx
+        div(
+          class = "card mb-3",
+          div(class = "card-header", textOutput(paste0("mod_title_", i))),
+          div(class = "card-body", uiOutput(paste0("mod_body_", i))),
+          div(class = "card-footer", uiOutput(paste0("mod_foot_", i)))
+        )
+      })
+      tagList(
+        tags$h5(class = "mt-3 mb-2", m$title,
+                tags$span(class = "text-muted small",
+                         paste0(" \u00b7 ", input$family,
+                                if (input$family != "Agency" && !is.null(input$sector)) paste0(" \u00b7 ", input$sector) else ""))),
+        cards
       )
     }))
   })
 
   # Genera dinamicamente los outputs (titulo/cuerpo/pie/plot/descarga) para
-  # cada tarjeta del modulo actual. Patron estandar de Shiny para un numero
-  # variable de outputs: se recrean cada vez que cambia el modulo/pais/etc.
-  MAX_MODULE_SLOTS <- 20
+  # CADA pregunta de TODOS los modulos (indice corrido). Patron estandar de
+  # Shiny para un numero variable de outputs: se recrean cada vez que
+  # cambia la familia/pais/etc.
+  MAX_MODULE_SLOTS <- 40
   observe({
-    qids <- module_qids()
+    qids <- all_qids()
     ql   <- qlist_fam()
     fam  <- input$family
 
