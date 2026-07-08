@@ -563,11 +563,11 @@ server <- function(input, output, session) {
       return(div(class = "text-muted p-4", "No questions available for this module."))
     }
     tagList(lapply(seq_along(qids), function(i) {
-      card(
-        class = "mb-3",
-        card_header(textOutput(paste0("mod_title_", i))),
-        uiOutput(paste0("mod_body_", i)),
-        card_footer(uiOutput(paste0("mod_foot_", i)))
+      div(
+        class = "card mb-3",
+        div(class = "card-header", textOutput(paste0("mod_title_", i))),
+        div(class = "card-body", uiOutput(paste0("mod_body_", i))),
+        div(class = "card-footer", uiOutput(paste0("mod_foot_", i)))
       )
     }))
   })
