@@ -38,6 +38,7 @@ library(flextable)
 source("R/question_dictionary.R", local = TRUE)
 source("R/manager_questions.R",  local = TRUE)
 source("R/systems_questions.R",  local = TRUE)
+source("R/module_metadata.R",     local = TRUE)
 source("R/data_load.R",           local = TRUE)
 source("R/translations_static.R", local = TRUE)
 source("R/plots.R",               local = TRUE)
@@ -243,7 +244,7 @@ ui <- page_sidebar(
         uiOutput("scope_picker"),
         uiOutput("sector_picker"),
         hr(),
-        uiOutput("question_picker"),
+        uiOutput("module_picker"),
         hr(),
         conditionalPanel(
           condition = "input.country != '' && typeof input.family !== 'undefined'",
@@ -300,9 +301,9 @@ ui <- page_sidebar(
       "How to use this dashboard",
       card(card_body(
         h4("What this dashboard does"),
-        p("Pick an economy to explore its Agency-questionnaire responses ",
+        p("Pick an economy to explore its questionnaire responses ",
           "and download an automated economy brief in Word. ",
-          "Use \u201cJump to question\u201d in the sidebar to switch charts."),
+          "Use \u201cModule\u201d in the sidebar to switch between groups of charts."),
         tags$ul(
           tags$li("Start in the sidebar: choose an ", tags$strong("Economy"),
                   " and a ", tags$strong("Questionnaire"),
@@ -313,8 +314,11 @@ ui <- page_sidebar(
           tags$li("For Managers and Systems, use the ", tags$strong("Sector"),
                   " picker to look at a single sector, or compare all ",
                   "sectors at once."),
-          tags$li("Use \u201cJump to question\u201d to move between questions ",
-                  "within the selected questionnaire."),
+          tags$li("Use \u201cModule\u201d to jump between the sections of the ",
+                  "questionnaire (e.g. \u201cAdoption of AI in Government\u201d, ",
+                  "\u201cBarriers and Risks\u201d) \u2014 all the charts for that ",
+                  "module\u2019s questions are shown together, each with the full ",
+                  "question text and number in a footnote below it."),
           tags$li("Each chart can be downloaded as a PNG image using the ",
                   tags$strong("Download chart (PNG)"),
                   " button below it."),
@@ -334,11 +338,8 @@ ui <- page_sidebar(
     nav_panel(
       "Explore charts",
       uiOutput("header_cards"),
-      card(
-        card_header(textOutput("sq_title")),
-        uiOutput("sq_plot_ui"),
-        uiOutput("sq_text")
-      )
+      uiOutput("module_title_ui"),
+      uiOutput("module_charts_ui")
     ),
     nav_panel(
       "Text responses",
@@ -489,16 +490,18 @@ server <- function(input, output, session) {
     }
   })
 
-  # Selector de preguntas (cambia con la familia)
-  output$question_picker <- renderUI({
+  # Selector de MODULO (agrupa varias preguntas/graficos juntos)
+  output$module_picker <- renderUI({
     if (is.null(input$family)) {
-      return(div(class = "small text-muted", "Select a questionnaire above to choose a question."))
+      return(div(class = "small text-muted", "Select a questionnaire above to choose a module."))
     }
-    ql <- qlist_fam()
-    if (length(ql) == 0) return(div(class = "small text-muted", "No questions available."))
-    choices <- setNames(names(ql),
-                        paste0(names(ql), " \u2014 ", vapply(ql, function(q) q$short, character(1))))
-    selectInput("question", "Jump to question", choices = choices)
+    ql   <- qlist_fam()
+    mods <- modules_for_family(input$family)
+    # solo módulos que tengan al menos 1 pregunta realmente disponible en la base
+    mods <- Filter(function(m) length(intersect(m$qids, names(ql))) > 0, mods)
+    if (length(mods) == 0) return(div(class = "small text-muted", "No modules available."))
+    choices <- vapply(mods, function(m) m$title, character(1))
+    selectInput("module", "Module", choices = choices)
   })
 
   # Data efectiva para graficar:
@@ -525,88 +528,122 @@ server <- function(input, output, session) {
     d2
   })
 
-  # Pregunta actualmente seleccionada (con guarda por si el input aún no existe)
-  current_q <- reactive({
-    ql <- qlist_fam()
-    qid <- input$question
-    if (is.null(qid) || !qid %in% names(ql)) return(NULL)
-    ql[[qid]]
+  # Ids de pregunta (en orden del cuestionario real) del modulo elegido,
+  # intersectados con lo que efectivamente esta disponible en la base.
+  module_qids <- reactive({
+    req(input$family, input$module)
+    ql   <- qlist_fam()
+    mods <- modules_for_family(input$family)
+    m    <- Find(function(x) identical(x$title, input$module), mods)
+    if (is.null(m)) return(character(0))
+    intersect(m$qids, names(ql))
   })
 
-  # Explorador: un solo gráfico por vez.
-  output$sq_title <- renderText({
-    if (is.null(input$country) || !nzchar(input$country) || is.null(input$family)) return("")
-    q <- current_q(); if (is.null(q)) return("")
-    paste0(input$question, " \u2014 ", q$title, " (", input$family,
-           if (input$family != "Agency" && !is.null(input$sector)) paste0(" \u00b7 ", input$sector) else "", ")")
+  output$module_title_ui <- renderUI({
+    if (is.null(input$country) || !nzchar(input$country) || is.null(input$family) || is.null(input$module)) {
+      return(NULL)
+    }
+    tags$h5(class = "mt-1",
+            input$module,
+            tags$span(class = "text-muted small",
+                     paste0(" \u00b7 ", input$family,
+                            if (input$family != "Agency" && !is.null(input$sector)) paste0(" \u00b7 ", input$sector) else "")))
   })
-  # Wrapper dinamico: muestra plotOutput solo cuando hay grafico que renderizar.
-  # Cuando es una tabla-badge (single sectorial), lo oculta para no reservar espacio.
-  output$sq_plot_ui <- renderUI({
+
+  # Panel principal: TODOS los graficos del modulo elegido, uno debajo del
+  # otro, cada uno con su propio footnote (numero de pregunta real + texto
+  # completo tal cual el cuestionario).
+  output$module_charts_ui <- renderUI({
     if (is.null(input$country) || !nzchar(input$country) || is.null(input$family)) {
       return(div(class = "text-muted p-4",
                  "Select an economy and a questionnaire from the sidebar to see charts."))
     }
-    q <- current_q()
-    use_sectoral <- base_fam() %in% c("manager", "systems") &&
-                    !is.null(input$scope) && input$scope == "compare"
-    show_table <- !is.null(q) && q$type == "single" && use_sectoral
-    if (show_table || (!is.null(q) && q$type == "text")) return(NULL)
-    tagList(
-      plotOutput("sq_plot", height = "460px"),
-      div(style = "text-align:right; margin-top:6px;",
-          downloadButton("dl_plot_png", "Download chart (PNG)",
-                         class = "btn-outline-secondary btn-sm"))
-    )
-  })
-
-  # Objeto ggplot actualmente mostrado en el explorador (reutilizable para
-  # renderPlot y para la descarga en PNG, asi no se duplica la logica).
-  sq_plot_obj <- reactive({
-    if (is.null(input$country) || !nzchar(input$country) || is.null(input$family)) return(NULL)
-    q <- current_q()
-    if (is.null(q) || q$type == "text") return(NULL)
-    use_sectoral <- base_fam() %in% c("manager", "systems") &&
-                    !is.null(input$scope) && input$scope == "compare"
-    if (use_sectoral && q$type == "single") return(NULL)
-    make_plot(plot_data(), q, input$country, scope = input$scope, base = base_fam())
-  })
-
-  output$sq_plot <- renderPlot({
-    req(input$country); req(input$family)
-    q <- current_q(); if (is.null(q)) return(empty_plot("", "Select a question"))
-    if (q$type == "text") return(empty_plot(q$title, "Open-text question — see the Text responses tab"))
-    p <- sq_plot_obj()
-    if (is.null(p)) return(NULL)
-    p
-  })
-
-  # Descarga del grafico actualmente mostrado como PNG
-  output$dl_plot_png <- downloadHandler(
-    filename = function() {
-      qid <- if (!is.null(input$question)) input$question else "chart"
-      paste0("dfbg_", tolower(gsub("[^A-Za-z]+", "_", input$country)),
-             "_", qid, ".png")
-    },
-    content = function(file) {
-      p <- sq_plot_obj()
-      if (is.null(p)) p <- empty_plot("", "No chart to export")
-      ggplot2::ggsave(filename = file, plot = p, device = "png",
-                      width = 10, height = 6.5, dpi = 200, bg = "white")
+    qids <- module_qids()
+    if (length(qids) == 0) {
+      return(div(class = "text-muted p-4", "No questions available for this module."))
     }
-  )
-  output$sq_text <- renderUI({
-    if (is.null(input$country) || !nzchar(input$country) || is.null(input$family)) return(NULL)
-    q <- current_q(); if (is.null(q)) return(NULL)
-    # 1. Tabla badge para preguntas single sectoriales
-    tbl_ui <- make_table_ui(plot_data(), q, input$country,
-                             scope = input$scope, base = base_fam())
-    if (!is.null(tbl_ui)) return(tbl_ui)
-    # 2. Texto libre
-    if (q$type != "text") return(NULL)
-    tbl <- make_text(plot_data(), q, input$country, base = base_fam())
-    if (nrow(tbl) == 0) return(p("No response."))
-    tags$ul(map(tbl$Response, ~ tags$li(.x)))
+    tagList(lapply(seq_along(qids), function(i) {
+      card(
+        class = "mb-3",
+        card_header(textOutput(paste0("mod_title_", i))),
+        uiOutput(paste0("mod_body_", i)),
+        card_footer(uiOutput(paste0("mod_foot_", i)))
+      )
+    }))
+  })
+
+  # Genera dinamicamente los outputs (titulo/cuerpo/pie/plot/descarga) para
+  # cada tarjeta del modulo actual. Patron estandar de Shiny para un numero
+  # variable de outputs: se recrean cada vez que cambia el modulo/pais/etc.
+  MAX_MODULE_SLOTS <- 20
+  observe({
+    qids <- module_qids()
+    ql   <- qlist_fam()
+    fam  <- input$family
+
+    for (i in seq_len(MAX_MODULE_SLOTS)) {
+      local({
+        ii <- i
+        if (ii > length(qids)) {
+          output[[paste0("mod_title_", ii)]] <- renderText("")
+          output[[paste0("mod_body_", ii)]]  <- renderUI(NULL)
+          output[[paste0("mod_foot_", ii)]]  <- renderUI(NULL)
+          return()
+        }
+        qid <- qids[ii]
+        q   <- ql[[qid]]
+
+        output[[paste0("mod_title_", ii)]] <- renderText({
+          paste0("Q", question_number(qid), " \u2014 ", q$short)
+        })
+
+        use_sectoral <- base_fam() %in% c("manager", "systems") &&
+                        !is.null(input$scope) && input$scope == "compare"
+        show_table <- q$type == "single" && use_sectoral
+
+        output[[paste0("mod_body_", ii)]] <- renderUI({
+          if (q$type == "text") {
+            tbl <- make_text(plot_data(), q, input$country, base = base_fam())
+            return(if (nrow(tbl) == 0) p("No response.") else tags$ul(map(tbl$Response, ~ tags$li(.x))))
+          }
+          tbl_ui <- make_table_ui(plot_data(), q, input$country,
+                                  scope = input$scope, base = base_fam())
+          if (!is.null(tbl_ui)) return(tbl_ui)
+          tagList(
+            plotOutput(paste0("mod_plot_", ii), height = "380px"),
+            div(style = "text-align:right; margin-top:6px;",
+                downloadButton(paste0("mod_dl_", ii), "Download chart (PNG)",
+                               class = "btn-outline-secondary btn-sm"))
+          )
+        })
+
+        output[[paste0("mod_plot_", ii)]] <- renderPlot({
+          if (q$type == "text" || show_table) return(NULL)
+          make_plot(plot_data(), q, input$country, scope = input$scope, base = base_fam())
+        })
+
+        output[[paste0("mod_dl_", ii)]] <- downloadHandler(
+          filename = function() {
+            paste0("dfbg_", tolower(gsub("[^A-Za-z]+", "_", input$country)), "_", qid, ".png")
+          },
+          content = function(file) {
+            p <- if (q$type == "text" || show_table) {
+              empty_plot("", "No chart to export")
+            } else {
+              make_plot(plot_data(), q, input$country, scope = input$scope, base = base_fam())
+            }
+            if (is.null(p)) p <- empty_plot("", "No chart to export")
+            ggplot2::ggsave(filename = file, plot = p, device = "png",
+                            width = 10, height = 6.5, dpi = 200, bg = "white")
+          }
+        )
+
+        output[[paste0("mod_foot_", ii)]] <- renderUI({
+          tags$p(class = "small text-muted mb-0",
+                 question_footnote(fam, qid, fallback_title = q$title))
+        })
+      })
+    }
   })
 
   output$api_status <- renderUI({
