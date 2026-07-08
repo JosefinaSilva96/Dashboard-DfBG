@@ -752,9 +752,12 @@ server <- function(input, output, session) {
   # Render del grid 3x2 con las seis categorías
   output$uc_region_label <- renderUI({
     rf <- input$uc_region %||% "All regions"
-    if (rf == "All regions") return(NULL)
-    tags$span(style = "font-size:12px; color:#888; font-weight:600;",
-              paste0("\u00b7 Region: ", rf))
+    note <- "\u00b7 Showing one example per economy per category"
+    if (rf == "All regions") {
+      return(tags$span(style = "font-size:12px; color:#888;", note))
+    }
+    tags$span(style = "font-size:12px; color:#888;",
+              paste0("\u00b7 Region: ", rf, "  ", note))
   })
 
   # Recorta el texto de cada caso a maximo 2 oraciones (con un limite de
@@ -790,10 +793,24 @@ server <- function(input, output, session) {
       keep_idx <- if (is.null(items) || length(items) == 0) {
         integer(0)
       } else {
-        Filter(function(i) {
+        idx <- Filter(function(i) {
           region_filter == "All regions" ||
             identical(country_region(items[[i]]$country), region_filter)
         }, seq_along(items))
+        if (length(idx) > 0) {
+          # Un mismo pais puede tener varias entradas en una misma categoria
+          # (una por sector/cuestionario) -> mostramos solo UNA por pais,
+          # siempre (con region elegida o no), para que la tarjeta no se
+          # haga enorme.
+          seen <- character(0)
+          idx <- Filter(function(i) {
+            cty <- items[[i]]$country
+            if (cty %in% seen) return(FALSE)
+            seen <<- c(seen, cty)
+            TRUE
+          }, idx)
+        }
+        idx
       }
 
       lis <- if (length(keep_idx) == 0) {
