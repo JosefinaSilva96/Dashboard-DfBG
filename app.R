@@ -64,6 +64,126 @@ wb_theme <- bs_theme(
 )
 
 # =============================================================================
+# Mapeo país -> región (clasificación de 7 regiones del World Bank), usado
+# para el filtro por región de la pestaña "AI Use Cases". Cubre nombres
+# comunes y algunas variantes oficiales; si un país no está en el mapa, cae
+# en "Other / Not classified" (no rompe nada, solo no se filtra bien).
+# =============================================================================
+
+UC_REGIONS <- c("East Asia & Pacific", "Europe & Central Asia",
+                "Latin America & Caribbean", "Middle East & North Africa",
+                "North America", "South Asia", "Sub-Saharan Africa")
+
+REGION_MAP <- c(
+  # --- East Asia & Pacific -----------------------------------------------
+  "Australia"="East Asia & Pacific","Brunei"="East Asia & Pacific","Brunei Darussalam"="East Asia & Pacific",
+  "Cambodia"="East Asia & Pacific","China"="East Asia & Pacific","Fiji"="East Asia & Pacific",
+  "Indonesia"="East Asia & Pacific","Japan"="East Asia & Pacific","Kiribati"="East Asia & Pacific",
+  "Korea, Rep."="East Asia & Pacific","South Korea"="East Asia & Pacific","Korea"="East Asia & Pacific",
+  "Lao PDR"="East Asia & Pacific","Laos"="East Asia & Pacific","Malaysia"="East Asia & Pacific",
+  "Marshall Islands"="East Asia & Pacific","Micronesia, Fed. Sts."="East Asia & Pacific",
+  "Micronesia"="East Asia & Pacific","Mongolia"="East Asia & Pacific","Myanmar"="East Asia & Pacific",
+  "Nauru"="East Asia & Pacific","New Zealand"="East Asia & Pacific","Palau"="East Asia & Pacific",
+  "Papua New Guinea"="East Asia & Pacific","Philippines"="East Asia & Pacific","Samoa"="East Asia & Pacific",
+  "Singapore"="East Asia & Pacific","Solomon Islands"="East Asia & Pacific","Taiwan"="East Asia & Pacific",
+  "Thailand"="East Asia & Pacific","Timor-Leste"="East Asia & Pacific","Tonga"="East Asia & Pacific",
+  "Tuvalu"="East Asia & Pacific","Vanuatu"="East Asia & Pacific","Vietnam"="East Asia & Pacific",
+  "Viet Nam"="East Asia & Pacific",
+
+  # --- Europe & Central Asia ----------------------------------------------
+  "Albania"="Europe & Central Asia","Andorra"="Europe & Central Asia","Armenia"="Europe & Central Asia",
+  "Austria"="Europe & Central Asia","Azerbaijan"="Europe & Central Asia","Belarus"="Europe & Central Asia",
+  "Belgium"="Europe & Central Asia","Bosnia and Herzegovina"="Europe & Central Asia",
+  "Bulgaria"="Europe & Central Asia","Croatia"="Europe & Central Asia","Cyprus"="Europe & Central Asia",
+  "Czechia"="Europe & Central Asia","Czech Republic"="Europe & Central Asia","Denmark"="Europe & Central Asia",
+  "Estonia"="Europe & Central Asia","Finland"="Europe & Central Asia","France"="Europe & Central Asia",
+  "Georgia"="Europe & Central Asia","Germany"="Europe & Central Asia","Greece"="Europe & Central Asia",
+  "Hungary"="Europe & Central Asia","Iceland"="Europe & Central Asia","Ireland"="Europe & Central Asia",
+  "Italy"="Europe & Central Asia","Kazakhstan"="Europe & Central Asia","Kosovo"="Europe & Central Asia",
+  "Kyrgyz Republic"="Europe & Central Asia","Kyrgyzstan"="Europe & Central Asia","Latvia"="Europe & Central Asia",
+  "Liechtenstein"="Europe & Central Asia","Lithuania"="Europe & Central Asia","Luxembourg"="Europe & Central Asia",
+  "Malta"="Europe & Central Asia","Moldova"="Europe & Central Asia","Monaco"="Europe & Central Asia",
+  "Montenegro"="Europe & Central Asia","Netherlands"="Europe & Central Asia",
+  "North Macedonia"="Europe & Central Asia","Norway"="Europe & Central Asia","Poland"="Europe & Central Asia",
+  "Portugal"="Europe & Central Asia","Romania"="Europe & Central Asia","Russia"="Europe & Central Asia",
+  "Russian Federation"="Europe & Central Asia","San Marino"="Europe & Central Asia",
+  "Serbia"="Europe & Central Asia","Slovak Republic"="Europe & Central Asia","Slovakia"="Europe & Central Asia",
+  "Slovenia"="Europe & Central Asia","Spain"="Europe & Central Asia","Sweden"="Europe & Central Asia",
+  "Switzerland"="Europe & Central Asia","Tajikistan"="Europe & Central Asia","Turkiye"="Europe & Central Asia",
+  "Turkey"="Europe & Central Asia","Turkmenistan"="Europe & Central Asia","Ukraine"="Europe & Central Asia",
+  "United Kingdom"="Europe & Central Asia","Uzbekistan"="Europe & Central Asia",
+
+  # --- Latin America & Caribbean -------------------------------------------
+  "Antigua and Barbuda"="Latin America & Caribbean","Argentina"="Latin America & Caribbean",
+  "Bahamas, The"="Latin America & Caribbean","Bahamas"="Latin America & Caribbean",
+  "Barbados"="Latin America & Caribbean","Belize"="Latin America & Caribbean",
+  "Bolivia"="Latin America & Caribbean","Brazil"="Latin America & Caribbean",
+  "Chile"="Latin America & Caribbean","Colombia"="Latin America & Caribbean",
+  "Costa Rica"="Latin America & Caribbean","Cuba"="Latin America & Caribbean",
+  "Dominica"="Latin America & Caribbean","Dominican Republic"="Latin America & Caribbean",
+  "Ecuador"="Latin America & Caribbean","El Salvador"="Latin America & Caribbean",
+  "Grenada"="Latin America & Caribbean","Guatemala"="Latin America & Caribbean",
+  "Guyana"="Latin America & Caribbean","Haiti"="Latin America & Caribbean",
+  "Honduras"="Latin America & Caribbean","Jamaica"="Latin America & Caribbean",
+  "Mexico"="Latin America & Caribbean","Nicaragua"="Latin America & Caribbean",
+  "Panama"="Latin America & Caribbean","Paraguay"="Latin America & Caribbean",
+  "Peru"="Latin America & Caribbean","St. Kitts and Nevis"="Latin America & Caribbean",
+  "St. Lucia"="Latin America & Caribbean","St. Vincent and the Grenadines"="Latin America & Caribbean",
+  "Suriname"="Latin America & Caribbean","Trinidad and Tobago"="Latin America & Caribbean",
+  "Uruguay"="Latin America & Caribbean","Venezuela"="Latin America & Caribbean",
+  "Venezuela, RB"="Latin America & Caribbean",
+
+  # --- Middle East & North Africa -------------------------------------------
+  "Algeria"="Middle East & North Africa","Bahrain"="Middle East & North Africa",
+  "Djibouti"="Middle East & North Africa","Egypt"="Middle East & North Africa",
+  "Egypt, Arab Rep."="Middle East & North Africa","Iran"="Middle East & North Africa",
+  "Iran, Islamic Rep."="Middle East & North Africa","Iraq"="Middle East & North Africa",
+  "Israel"="Middle East & North Africa","Jordan"="Middle East & North Africa",
+  "Kuwait"="Middle East & North Africa","Lebanon"="Middle East & North Africa",
+  "Libya"="Middle East & North Africa","Malta"="Middle East & North Africa",
+  "Morocco"="Middle East & North Africa","Oman"="Middle East & North Africa",
+  "Qatar"="Middle East & North Africa","Saudi Arabia"="Middle East & North Africa",
+  "Syria"="Middle East & North Africa","Syrian Arab Republic"="Middle East & North Africa",
+  "Tunisia"="Middle East & North Africa","United Arab Emirates"="Middle East & North Africa",
+  "West Bank and Gaza"="Middle East & North Africa","Yemen"="Middle East & North Africa",
+  "Yemen, Rep."="Middle East & North Africa",
+
+  # --- North America ---------------------------------------------------------
+  "Canada"="North America","United States"="North America","United States of America"="North America",
+
+  # --- South Asia --------------------------------------------------------------
+  "Afghanistan"="South Asia","Bangladesh"="South Asia","Bhutan"="South Asia","India"="South Asia",
+  "Maldives"="South Asia","Nepal"="South Asia","Pakistan"="South Asia","Sri Lanka"="South Asia",
+
+  # --- Sub-Saharan Africa -----------------------------------------------------
+  "Angola"="Sub-Saharan Africa","Benin"="Sub-Saharan Africa","Botswana"="Sub-Saharan Africa",
+  "Burkina Faso"="Sub-Saharan Africa","Burundi"="Sub-Saharan Africa","Cabo Verde"="Sub-Saharan Africa",
+  "Cameroon"="Sub-Saharan Africa","Central African Republic"="Sub-Saharan Africa","Chad"="Sub-Saharan Africa",
+  "Comoros"="Sub-Saharan Africa","Congo, Dem. Rep."="Sub-Saharan Africa","Congo, Rep."="Sub-Saharan Africa",
+  "DRC"="Sub-Saharan Africa","Cote d'Ivoire"="Sub-Saharan Africa","Ivory Coast"="Sub-Saharan Africa",
+  "Equatorial Guinea"="Sub-Saharan Africa","Eritrea"="Sub-Saharan Africa","Eswatini"="Sub-Saharan Africa",
+  "Ethiopia"="Sub-Saharan Africa","Gabon"="Sub-Saharan Africa","Gambia, The"="Sub-Saharan Africa",
+  "Gambia"="Sub-Saharan Africa","Ghana"="Sub-Saharan Africa","Guinea"="Sub-Saharan Africa",
+  "Guinea-Bissau"="Sub-Saharan Africa","Kenya"="Sub-Saharan Africa","Lesotho"="Sub-Saharan Africa",
+  "Liberia"="Sub-Saharan Africa","Madagascar"="Sub-Saharan Africa","Malawi"="Sub-Saharan Africa",
+  "Mali"="Sub-Saharan Africa","Mauritania"="Sub-Saharan Africa","Mauritius"="Sub-Saharan Africa",
+  "Mozambique"="Sub-Saharan Africa","Namibia"="Sub-Saharan Africa","Niger"="Sub-Saharan Africa",
+  "Nigeria"="Sub-Saharan Africa","Rwanda"="Sub-Saharan Africa","Sao Tome and Principe"="Sub-Saharan Africa",
+  "Senegal"="Sub-Saharan Africa","Seychelles"="Sub-Saharan Africa","Sierra Leone"="Sub-Saharan Africa",
+  "Somalia"="Sub-Saharan Africa","South Africa"="Sub-Saharan Africa","South Sudan"="Sub-Saharan Africa",
+  "Sudan"="Sub-Saharan Africa","Tanzania"="Sub-Saharan Africa","Togo"="Sub-Saharan Africa",
+  "Uganda"="Sub-Saharan Africa","Zambia"="Sub-Saharan Africa","Zimbabwe"="Sub-Saharan Africa"
+)
+
+# Devuelve la región de un país; "Other / Not classified" si no está en el mapa
+# (por ejemplo si el nombre exacto en tus datos difiere de las variantes de
+# arriba — avisame y lo agrego).
+country_region <- function(cty) {
+  r <- unname(REGION_MAP[cty])
+  ifelse(is.na(r), "Other / Not classified", r)
+}
+
+# =============================================================================
 # UI
 # =============================================================================
 
@@ -188,7 +308,7 @@ ui <- page_sidebar(
                   " and a ", tags$strong("Questionnaire"),
                   " (Agency, Managers, or Systems)."),
           tags$li("Charts can show the economy alone or compared with the ",
-                  "(weighted) average of its World Bank income group, via ",
+                  "average of its World Bank income group, via ",
                   "the \u201cChart view\u201d option."),
           tags$li("For Managers and Systems, use the ", tags$strong("Sector"),
                   " picker to look at a single sector, or compare all ",
@@ -202,13 +322,12 @@ ui <- page_sidebar(
                   " tab shows the open-text answers for the selected ",
                   "economy and questionnaire."),
           tags$li("The ", tags$strong("AI Use Cases"),
-                  " tab lets you browse and add examples of AI applications ",
-                  "by category, and download the summary as an image."),
+                  " tab shows curated examples of AI applications by ",
+                  "category. Use the region filter to narrow down to one ",
+                  "World Bank region, and download the summary as an image."),
           tags$li("The ", tags$strong("Download economy brief"),
                   " button in the sidebar generates an automated Word brief ",
-                  "for the selected economy."),
-          tags$li("Each economy weighs 1/n in the income-group average, ",
-                  "matching the original R Markdown analysis.")
+                  "for the selected economy.")
         )
       ))
     ),
@@ -230,33 +349,20 @@ ui <- page_sidebar(
       div(
         style = "padding:8px 12px;",
 
-        # === Formulario "Add example" (NO entra en la captura) ===
+        # === Filtro por región + descarga (afecta lo que se muestra) ===
         div(
-          style = "background:#f5f7fa; border:1px solid #e0e4ea; border-radius:8px; padding:10px 14px; margin-bottom:14px;",
-          div(style = "display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:8px;",
-              tags$span(style = "font-weight:600; font-size:15px;", "Add example to category:"),
-              tags$button(
-                id = "uc_download", type = "button",
-                class = "action-button btn btn-primary",
-                style = "background:#0F6E56; border-color:#0F6E56; font-weight:600;",
-                HTML("&#x2B07;&#xFE0E; Download as PNG")
-              )),
-          fluidRow(
-            column(3, selectizeInput("uc_country", NULL,
-                                     choices = NULL,
-                                     options = list(placeholder = "Type to search a country...",
-                                                    onInitialize = I('function() { this.setValue(""); }')))),
-            column(5, selectizeInput("uc_app", NULL, choices = NULL,
-                                     options = list(placeholder = "AI apps for this country & category..."))),
-            column(2, selectInput("uc_cat", NULL,
-                                  choices = c("1. Staff Productivity Tools"     = "prod",
-                                              "2. Citizen-Facing AI Services"   = "citizen",
-                                              "3. AI in Health"                 = "health",
-                                              "4. Tax Administration & Public Finance" = "tax",
-                                              "5. AI in Education"              = "edu",
-                                              "6. Data Infrastructure & Sovereignty" = "infra"))),
-            column(2, actionButton("uc_add", "Add", class = "btn-primary w-100",
-                                   style = "margin-top:0;"))
+          style = "display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:14px;",
+          div(style = "display:flex; align-items:center; gap:10px;",
+              tags$span(style = "font-weight:600; font-size:14px;", "Filter by region:"),
+              div(style = "min-width:280px;",
+                  selectInput("uc_region", NULL,
+                             choices = c("All regions", UC_REGIONS, "Other / Not classified"),
+                             selected = "All regions", width = "100%"))),
+          tags$button(
+            id = "uc_download", type = "button",
+            class = "action-button btn btn-primary",
+            style = "background:#0F6E56; border-color:#0F6E56; font-weight:600;",
+            HTML("&#x2B07;&#xFE0E; Download as PNG")
           )
         ),
 
@@ -269,7 +375,8 @@ ui <- page_sidebar(
             h4(style = "margin:0; font-weight:700; color:#1a1a1a;",
                "AI Use Cases \u2014 Six Categories Across DfBG Questionnaires"),
             tags$span(style = "font-size:12px; color:#888;",
-                      "Source: DfBG Agency & Manager Questionnaires")
+                      "Source: DfBG Agency & Manager Questionnaires"),
+            uiOutput("uc_region_label", inline = TRUE)
           ),
           uiOutput("uc_grid")
         )
@@ -598,194 +705,11 @@ server <- function(input, output, session) {
     )
   )
 
-  # Poblar selectize de paises (una sola vez, server-side para que sea rapido)
-  observe({
-    countries <- sort(country_choices(req_data())$country)
-    updateSelectizeInput(session, "uc_country",
-                         choices = countries,
-                         server = TRUE,
-                         selected = character(0))
-  })
-
-  # Apps reportadas por el pais + categoria elegidos. Junta q11 (Agency/Managers)
-  # y q13 (Systems) y filtra segun el mapeo:
-  #   prod    -> Civil Service (Managers + Systems) + Agency
-  #   citizen -> Agency + cualquier app con q11_2 == 'front-facing'
-  #   health  -> Health (Managers + Systems)
-  #   tax     -> Tax + PublicFinance (Managers + Systems)
-  #   edu     -> Education (Managers + Systems)
-  #   infra   -> Systems (todos los sectores)
-  CAT_SECTORS <- list(
-    prod    = c("Civil_Service"),
-    health  = c("Health"),
-    tax     = c("Tax","Public_Finance"),
-    edu     = c("Education"),
-    infra   = c("Civil_Service","Health","Tax","Public_Finance","Education","Procurement")
-  )
-
-  uc_country_apps <- reactive({
-    ctry <- input$uc_country
-    cat_id <- input$uc_cat
-    if (is.null(ctry) || !nzchar(trimws(ctry))) return(NULL)
-    if (is.null(cat_id) || !cat_id %in% names(UC_CATS)) return(NULL)
-    d <- req_data()
-    apps <- list()
-
-    # Helper: extrae las 3 apps de q11 con su flag internal/front-facing
-    # Retorna df: app, source, facing (internal/front-facing/NA)
-    pick_q11 <- function(row, source_label) {
-      out <- list()
-      for (i in 1:3) {
-        app_col  <- paste0("q11_", i)
-        face_col <- paste0("q11_", i, "_2")
-        if (!app_col %in% names(row)) next
-        app_v <- as.character(row[[app_col]][1])
-        if (is.na(app_v) || !nzchar(trimws(app_v)) ||
-            tolower(trimws(app_v)) %in% c("na","n/a","none","-","not sure")) next
-        face <- NA_character_
-        if (face_col %in% names(row)) {
-          fv <- as.character(row[[face_col]][1])
-          if (!is.na(fv)) face <- tolower(trimws(fv))
-        }
-        out[[length(out) + 1]] <- data.frame(
-          app = trimws(app_v), source = source_label,
-          facing = face, stringsAsFactors = FALSE)
-      }
-      if (length(out) == 0) return(NULL)
-      do.call(rbind, out)
-    }
-    # Systems q13 (texto libre)
-    pick_sys_apps <- function(row, source_label) {
-      cols <- c("q13_1","q13_2","q13_3","q13","q13a")
-      cols <- intersect(cols, names(row))
-      if (length(cols) == 0) return(NULL)
-      vals <- unlist(row[1, cols], use.names = FALSE)
-      vals <- vals[!is.na(vals) & nzchar(trimws(vals))]
-      vals <- vals[!tolower(trimws(vals)) %in% c("na","n/a","none","-","not sure","1","yes","no")]
-      if (length(vals) == 0) return(NULL)
-      data.frame(app = trimws(as.character(vals)),
-                 source = source_label, facing = NA_character_,
-                 stringsAsFactors = FALSE)
-    }
-
-    # ----- recolectar TODO lo del pais, despues filtrar por categoria -----
-
-    # Agency
-    ag <- dplyr::filter(d$agency, country == ctry)
-    if (nrow(ag) > 0) {
-      out <- pick_q11(ag, "Agency")
-      if (!is.null(out)) apps[["Agency"]] <- out
-    }
-    # Managers (1 fila por sector)
-    if (!is.null(d$manager)) {
-      mg <- dplyr::filter(d$manager, country == ctry)
-      if (nrow(mg) > 0) {
-        mg$sector_raw <- stringr::str_remove(mg$questionnaire, "^(Systems|Manager)_")
-        for (i in seq_len(nrow(mg))) {
-          out <- pick_q11(mg[i, , drop = FALSE],
-                          paste0("Managers \u00b7 ", gsub("_", " ", mg$sector_raw[i])))
-          if (!is.null(out)) {
-            out$sector <- mg$sector_raw[i]
-            out$family <- "manager"
-            apps[[paste0("M_", mg$sector_raw[i])]] <- out
-          }
-        }
-      }
-    }
-    # Systems (1 fila por sector)
-    if (!is.null(d$systems)) {
-      sy <- dplyr::filter(d$systems, country == ctry)
-      if (nrow(sy) > 0) {
-        sy$sector_raw <- stringr::str_remove(sy$questionnaire, "^(Systems|Manager)_")
-        for (i in seq_len(nrow(sy))) {
-          out <- pick_sys_apps(sy[i, , drop = FALSE],
-                               paste0("Systems \u00b7 ", gsub("_", " ", sy$sector_raw[i])))
-          if (!is.null(out)) {
-            out$sector <- sy$sector_raw[i]
-            out$family <- "systems"
-            apps[[paste0("S_", sy$sector_raw[i])]] <- out
-          }
-        }
-      }
-    }
-
-    if (length(apps) == 0) return(NULL)
-    df <- dplyr::bind_rows(apps)
-    if (!"sector" %in% names(df)) df$sector <- NA_character_
-    if (!"family" %in% names(df)) df$family <- NA_character_
-    if (!"facing" %in% names(df)) df$facing <- NA_character_
-
-    # marca Agency con family=agency
-    df$family[grepl("^Agency", df$source)] <- "agency"
-
-    # ----- FILTRO POR CATEGORIA -----
-    df <- switch(cat_id,
-      prod    = dplyr::filter(df,
-                  df$sector %in% CAT_SECTORS$prod | df$family == "agency"),
-      citizen = dplyr::filter(df,
-                  df$family == "agency" |
-                  (!is.na(df$facing) & grepl("front", df$facing))),
-      health  = dplyr::filter(df, df$sector %in% CAT_SECTORS$health),
-      tax     = dplyr::filter(df, df$sector %in% CAT_SECTORS$tax),
-      edu     = dplyr::filter(df, df$sector %in% CAT_SECTORS$edu),
-      infra   = dplyr::filter(df, df$family == "systems"),
-      df
-    )
-
-    if (nrow(df) == 0) return(NULL)
-    df$short <- ifelse(nchar(df$app) > 80,
-                       paste0(substr(df$app, 1, 77), "\u2026"), df$app)
-    df$label <- paste0(df$short, "  \u2014  ", df$source)
-    df$value <- paste0(df$app, "  \u2014  ", df$source)
-    df
-  })
-
-  # Cuando cambia el pais O la categoria, repoblar el dropdown de apps
-  observeEvent(list(input$uc_country, input$uc_cat), {
-    apps <- uc_country_apps()
-    if (is.null(apps) || nrow(apps) == 0) {
-      updateSelectizeInput(session, "uc_app", choices = character(0),
-                           server = TRUE, selected = character(0))
-      return()
-    }
-    choices <- setNames(apps$value, apps$label)
-    updateSelectizeInput(session, "uc_app", choices = choices,
-                         server = TRUE, selected = character(0))
-  }, ignoreInit = TRUE, ignoreNULL = FALSE)
 
   # Descargar el cuadro como PNG (envia mensaje al cliente, que rasteriza el DOM)
   observeEvent(input$uc_download, {
     session$sendCustomMessage("uc_download_png",
                               list(filename = "dfbg_ai_use_cases.png"))
-  })
-
-  # Agregar entrada
-  observeEvent(input$uc_add, {
-    ctry   <- input$uc_country
-    app_v  <- input$uc_app
-    cat_id <- input$uc_cat
-
-    if (is.null(ctry) || !nzchar(trimws(ctry))) {
-      showNotification("Please pick a country first.", type = "warning", duration = 3)
-      return()
-    }
-    if (is.null(app_v) || !nzchar(trimws(app_v))) {
-      showNotification("This country has no AI applications reported, or none is selected.",
-                       type = "warning", duration = 4)
-      return()
-    }
-    if (is.null(cat_id) || !cat_id %in% names(UC_CATS)) return()
-
-    current <- use_cases[[cat_id]]
-    use_cases[[cat_id]] <- c(current,
-                             list(list(country = ctry, text = trimws(app_v))))
-
-    # limpiar para el proximo
-    updateSelectizeInput(session, "uc_country", selected = character(0))
-    updateSelectizeInput(session, "uc_app", choices = character(0),
-                         selected = character(0))
-    showNotification(paste0("Added to ", UC_CATS[[cat_id]]$title),
-                     type = "message", duration = 2)
   })
 
   # Delete: cada botoncito en el grid llama a Shiny.setInputValue('uc_delete', ...)
@@ -801,16 +725,40 @@ server <- function(input, output, session) {
   })
 
   # Render del grid 3x2 con las seis categorías
+  output$uc_region_label <- renderUI({
+    rf <- input$uc_region %||% "All regions"
+    if (rf == "All regions") return(NULL)
+    tags$span(style = "font-size:12px; color:#888; font-weight:600;",
+              paste0("\u00b7 Region: ", rf))
+  })
+
   output$uc_grid <- renderUI({
     selected_country <- input$country
+    region_filter <- input$uc_region %||% "All regions"
     cards <- lapply(names(UC_CATS), function(cc) {
       meta  <- UC_CATS[[cc]]
       items <- use_cases[[cc]]
-      lis <- if (is.null(items) || length(items) == 0) {
-        list(tags$li(style = "color:#aaa; font-style:italic;",
-                     "No entries yet \u2014 use the form above to add one."))
+
+      # Indices que pasan el filtro de region (se preserva el indice ORIGINAL
+      # dentro de `items`, asi el boton de borrar sigue apuntando a la
+      # entrada correcta aunque la vista este filtrada por region).
+      keep_idx <- if (is.null(items) || length(items) == 0) {
+        integer(0)
       } else {
-        lapply(seq_along(items), function(i) {
+        Filter(function(i) {
+          region_filter == "All regions" ||
+            identical(country_region(items[[i]]$country), region_filter)
+        }, seq_along(items))
+      }
+
+      lis <- if (length(keep_idx) == 0) {
+        msg <- if (is.null(items) || length(items) == 0)
+          "No entries yet \u2014 use the form above to add one."
+        else
+          paste0("No entries for ", region_filter, " yet.")
+        list(tags$li(style = "color:#aaa; font-style:italic;", msg))
+      } else {
+        lapply(keep_idx, function(i) {
           it <- items[[i]]
           is_selected <- identical(it$country, selected_country)
           tags$li(
