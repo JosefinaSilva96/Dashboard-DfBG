@@ -326,6 +326,11 @@ add_disclaimer_page <- function(doc) {
     "Economy briefs are only being shared with economy counterparts involved in survey activities and World Bank staff. We do not intend to make them publicly available, and they should be seen as working documents rather than formal publications.",
     fp_text(bold = TRUE)
   )))
+  doc <- body_add_par(doc, "", style = "Normal")
+  doc <- body_add_fpar(doc, fpar(ftext(
+    "This brief was generated with the assistance of artificial intelligence based on survey responses and World Bank data. The narrative sections summarizing each economy's results are AI-generated and have not been reviewed for accuracy by World Bank staff; charts and tables reflect the underlying survey data directly. Please verify any figure or statement before citing or sharing this document externally.",
+    fp_text(bold = TRUE)
+  )))
   doc <- body_add_break(doc)
   doc
 }

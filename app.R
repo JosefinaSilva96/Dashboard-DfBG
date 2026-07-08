@@ -249,7 +249,9 @@ ui <- page_sidebar(
         conditionalPanel(
           condition = "input.country != '' && typeof input.family !== 'undefined'",
           downloadButton("dl_brief", "Download economy brief (.docx)",
-                         class = "btn-primary w-100")
+                         class = "btn-primary w-100"),
+          div(class = "small text-muted mt-1",
+              "The narrative sections of this brief are AI-generated from survey data and have not been reviewed by World Bank staff.")
         ),
         conditionalPanel(
           condition = "input.country == '' || typeof input.family === 'undefined'",
@@ -266,6 +268,26 @@ ui <- page_sidebar(
     nav_panel(
       "About the survey",
       card(card_body(
+        h4("About This Dashboard"),
+        p("This dashboard lets you explore the results of the AI and Data for ",
+          "Better Governance Survey economy by economy, compare an economy ",
+          "against the average of its World Bank income group, browse ",
+          "curated examples of AI use cases by region, and generate an ",
+          "automated economy brief summarizing the survey results."),
+        p(tags$em(
+          "The survey responses shown throughout this dashboard reflect the ",
+          "views and self-reported information of the participating ",
+          "governments and respondents. They do not represent the views, ",
+          "position, or endorsement of the World Bank Group, its Board of ",
+          "Executive Directors, or the governments they represent."
+        )),
+        p("This survey was carried out as part of the ",
+          tags$strong("World Development Report 2026: Decoding AI for Development"),
+          ". More information about the report is available at ",
+          tags$a(href = "https://www.worldbank.org/en/publication/wdr2026",
+                 target = "_blank",
+                 "worldbank.org/en/publication/wdr2026"), "."),
+        hr(),
         h4("The AI and Data for Better Governance Survey"),
         p("The AI and Data for Better Governance Survey was designed to ",
           "accomplish the following:"),
