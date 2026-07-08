@@ -1,0 +1,461 @@
+country,category,text
+Argentina,citizen,Chatbot MIA - citizen-facing inquiry chatbot
+Benin,citizen,GPT-BJ: Chatbot on the public services website that directs citizens to the right service based on their need
+Bhutan,citizen,Machine Translation from English to Dzongkha for public service delivery portal
+Burkina Faso,citizen,"LegiChat, providing an interactive assistant that lets citizens query Burkina Faso's legislative corpus"
+Chile,citizen,"Talent search and attraction system, headhunting based on successful interns from the Chilean state, to join the public service as a first work experience · Civil Service"
+Czechia,citizen,"AI-assisted pre-filling of public service forms. Purpose: Use of AI (LLM, NLP and conversational interfaces) to support users in completing electronic forms, reducing errors and improving accessibility of digital public services.  The AI use within the Digital and Information Agency is currently focused on pilot projects and experimentation, with the aim of validating use cases before wider deoployment across public administation"
+Ethiopia,citizen,Immigration and citizen service
+Greece,citizen,"mAIgov – AI Citizen Service Assistant: Its purpose is to provide automated, natural language assistance to citizens regarding public services, administrative procedures, and the contents of the gov.gr portal. In addition, it has recently been embedded in gov.gr wallet"
+Hungary,citizen,"1818 MIA Chatbot - hybrid chatbot with text-to-speech and speech-to-text functionalities to support clients of various connected public services. The MIA chatbot is an in‑house, custom‑developed hybrid chatbot service that we have been using at the 1818 Government Hotline since 2022 not to replace human intelligence, but to support and enhance operators' work. In 2025, MIA was already able to respond to 63% of customer inquiries without operator intervention. However, in more complex life situations - where precise answers are required and hallucination‑related errors must be avoided - the chatbot redirects the conversation to a human operator. These cases fall into two categories: in most of them, the chatbot still provides answer suggestions to the operator, who can select from them, significantly speeding up response times. In the more complicated cases making up a few percent of all questions, the operator provides the final answer directly.
+Currently, MIA does not use a large language model; therefore, it does not perform LLM‑based analysis of customer questions and does not search in any RAG-model knowledge base. Instead, it learns exclusively from conversations between operators and customers, and only provides automated responses for pre‑validated question‑answer pairs"
+Kazakhstan,citizen,AI on the Social Services Portal (SSP) · Civil Service
+Kazakhstan,citizen,AI model for assessing citizens needs · Civil Service
+Kazakhstan,citizen,AI model for assessing citizens' needs · Civil Service
+Kosovo,citizen,"Chatbot at eKosova, citizen facing query front-end"
+Panama,citizen,Virtual Assistant for Citizen Services 3-1-1
+Portugal,citizen,"Virtual Assistant on GOV.PT (public service gateway) -   The Portuguese single digital gateway, Gov.pt, provides a multilingual GenAI virtual assistant (12 languages) that gives real-time guidance on 2.300+ public services. It  benefits citizens, foreign residents and businesses by making information easier to find and understand. It was developed to cut bureaucratic friction (complex navigation, language barriers and long waits) while reducing workload on public administration"
+Portugal,citizen,LIA - LIA is a chat-based search engine specialized in the legislation published in Portugal Official Gazette. It tries to avoid the challenges most citizens (non-legal trained) have when searching legislation. Lia uses a hybrid architecture to communicate with the users and to return search results. The first version of Lia was able to respond based only on current consolidated legislation. The second version will be able to respond on current consolidated legislation and non-consolidated fragmented legislation. With the expected growth of LLM capabilities and reduction in processing costs is feasible to expect the arrival of full-fledged LLM search engines based on non-fragmented legislation
+Singapore,citizen,"AI-powered recommender / bot for Service Delivery - To provide personalised, proactive and omni-channel recommendations on relevant Govt schemes to citizens · Civil Service"
+Tajikistan,citizen,Centralized portal of public services
+Ukraine,citizen,Diia AI - This is the world's first national AI assistant. An assistant that can fulfill your requests and provide ready-made services directly in the chat on the main page of the Diya portal
+United Arab Emirates,citizen,"U.ask - The UAE federal government's bilingual (Arabic/English) generative AI assistant, integrated into the official national portal u.ae. It provides unified, conversational access to government services and information, automating responses to citizen and resident enquiries across federal entities"
+United Arab Emirates,citizen,"TAMM Platform (AI-supported Government Services)- It consolidates services across more than 50 entities into a single citizen and business journey, with AI delivering personalised recommendations, intelligent document triage, conversational service navigation, and proactive service prompts. TAMM is being repositioned as the operational backbone of Abu Dhabi's ""AI-native government by 2027"" commitment"
+United Arab Emirates,citizen,"(GAIA) secure, government-wide platform that enables federal entities to rapidly develop, deploy, and operate AI agents. It automates internal workflows, augments employee tasks, and powers AI-driven public service delivery at scale , providing a shared sovereign infrastructure layer so individual ministries do not need to build foundational AI capability from scratch"
+Argentina,edu,School dropout prediction
+Chile,edu,"Curriculum (CV) Evaluation System, to streamline the CV-review stage in the public sector selection process · Civil Service"
+Czechia,edu,Microsoft Copilot M365 - for 100 employees (the rest has Copilot chat at their disposal) · Education
+Czechia,edu,"Support for administrative processes of some subsidy programs, including automation of email processing · Education"
+Czechia,edu,Support for decision-making processes within the agenda of recognition of foreign education for health and social insurance purposes · Education
+Greece,edu,School vocational guidance using Machine Learning Techniques · Education
+Greece,edu,AI assistant of Panhellenic Schools Network · Education
+Greece,edu,AI focus within the “Education Innovation Centers” for capacity‑building and pedagogical AI uses · Education
+Greece,edu,Eduplan · Education
+Guatemala,edu,Lago de datos · Education
+Guatemala,edu,Chatbot for handling general inquiries about simplified procedures using natural language · Education
+Guatemala,edu,Querying the student and teacher records system using natural language · Education
+Guatemala,edu,Data lake for querying student and teacher records · Education
+Guatemala,edu,Chatbot for handling inquiries about simplified administrative procedures using natural language · Education
+Jordan,edu,Siraj platform for student and teachers · Education
+Kazakhstan,edu,AI-Qyzmet - training civil servants in the practical use of AI and the integration of AI tools into everyday workflows · Education
+Kazakhstan,edu,AI Governance 500 - preparing public sector leaders to introduce and scale AI-based solutions in public administration · Education
+Kazakhstan,edu,GOV HR AI - an intelligent system for analyzing HR data and supporting decision-making in public sector human resource management · Education
+Kazakhstan,edu,Data Integrity AI · Education
+Kazakhstan,edu,AI expert for educational programs · Education
+Kazakhstan,edu,Risk Identification Agent (RegTech AI) · Education
+Kosovo,edu,"MIA – Learning with Artificial Intelligence, MIA  the purpose is to support:
+Students in learning, exercises and preparation for the Achievement Test, the Matura Exam and international assessments.
+Teachers in lesson planning, development of teaching materials, assessment and pedagogical use of technology.
+Educational institutions in digitalisation, quality assurance, security and sustainable development.
+I operate in standard Albanian and adapt according to the user’s role and level · Education"
+Lao PDR,edu,"Eduten: An AI-powered educational platform designed to improve foundational numeracy skills. It uses machine learning to provide personalized mathematics exercises, real-time analytics for teachers, and gamified tasks for students · Education"
+Lao PDR,edu,"AI Air Quality Sensors: Deployment of AI-supported sensors across schools to monitor PM2.5 and other pollutants. The system uses AI-based forecasting to predict dangerous pollution spikes, enabling MoES to make data-driven decisions on school closures and student safety · Education"
+Peru,edu,School management information system SIAGIE - functional support · Education
+Peru,edu,PERUEDUCA · Education
+Peru,edu,Model for identifying aggressive behavior in the classroom · Education
+Peru,edu,"Peru Educa, improving learning in Peru · Education"
+Peru,edu,"SonarQube, code quality and security control · Education"
+Peru,edu,chatbot (proyecto) · Education
+Portugal,edu,"AMALIA - AMALIA is the first LLM designed for European Portuguese, with the aim of ensuring Portugal's linguistic and cultural sovereignty. The base version was launched in SEP25 and the full multimodal version (capable of interpreting text, images and video) arrives mid-2026. Use cases will focus on the areas of education, culture, speech, media, science and public administration. The model will be openly available so that it can be used and improved by scientists and development teams on any platform"
+Portugal,edu,Iaedu.pt (making professional LLMs available to higher Education Institutions) · Education
+Portugal,edu,Science Counter · Education
+Portugal,edu,PRR document auditing checker · Education
+Portugal,edu,www.iaedu.pt · Education
+Saudi Arabia,edu,"Microsoft Copilot through Madrasati Educational Account, Generative AI tools through Madrasati educational account , Enabling teachers and students to use generative AI tools, such as Microsoft Copilot, for educational content creation, assessment design, classroom support, and learning activities · Education"
+Saudi Arabia,edu,Student Admission – Predicting student admission outcomes and supporting admission-related decision-making through AI-powered predictive analytics · Education
+Saudi Arabia,edu,Madrasati AI Assistant / Chatbot – Providing automated AI-based responses to beneficiaries’ inquiries and supporting users in accessing back-to-school and Madrasati platform services · Education
+Singapore,edu,Learning assistant (LEA) - student tutoring · Education
+Singapore,edu,LangBuddy - interactive mother tongue language voice chatbot · Education
+Singapore,edu,Markly - teacher's marking co-pilot · Education
+Singapore,edu,LangBuddy Mother Tongue language learning app · Education
+Singapore,edu,Markly - AI feedback marking assistant · Education
+Singapore,edu,"AI Platform - evaluation of AI trust, safety, accuracy · Education"
+Turkiye,edu,"MEBBYS – AI-supported decision-support and business intelligence system integrated with GIS. Uses ML on large-scale educational, administrative, and spatial data for predictive analytics, early warning capabilities, and real-time insights supporting strategic planning and resource allocation.
+
+Ai-based personalized guidance robot for lifelong learners
+
+With the piloted guidance and course recommendation module, trainees are directed to the most suitable training programs by taking into account their age, education level, city of residence, and previous learning. Thanks to this personalized system, individuals aim to access courses that match their interests and needs more quickly. Developed with a digital guidance approach, the application is a chat-bot that will enable individuals to choose the most suitable training for them.
+
+MEBİ Individual Learning Platform
+It is s a digital educational ecosystem developed by the Ministry of National Education (MEB) to provide personalized, AI-supported learning for students and graduates · Education"
+Turkiye,edu,"EBA Assistant – LLM-based personalised learning assistant. Delivers customised content recommendations, study plans, and instant academic support to students based on learner data. Leverages generative AI and learning analytics to enhance student engagement and self-regulated learning · Education"
+Turkiye,edu,DİLİM – AI-supported language learning platform aligned with CEFR. Uses AI-based assessment models to analyse learner performance in speaking and writing tasks. Supports adaptive learning pathways by providing targeted feedback tailored to individual proficiency levels · Education
+Turkiye,edu,"MEBBYS – AI-supported decision-support and ministry intelligence system integrated with GIS. Uses ML on large-scale educational, administrative, and spatial data for predictive analytics, early warning, and real-time insights supporting strategic planning and resource allocation · Education"
+Turkiye,edu,"EBA Assistant – LLM-based personalised learning assistant delivering customised content recommendations, study plans, and instant academic support to students based on learner data · Education"
+Turkiye,edu,"DİLİM – AI-supported language learning platform aligned with CEFR, using AI-based assessment models to analyse learner performance in speaking and writing tasks and provide adaptive feedback · Education"
+Uruguay,edu,Ceibal (education) – Virtual tutoring
+Uruguay,edu,SAT tutors support for marking assignments · Education
+Uruguay,edu,PowerBuddy Content generation for teachers embedded in LMS · Education
+Uruguay,edu,Aleks adaptive math platform · Education
+Uruguay,edu,OBI chatbot for student guidance in executive functions · Education
+Uruguay,edu,Adaptative English Test · Education
+Uruguay,edu,School drop out forcasting · Education
+West Bank and Gaza,edu,Data analysis · Education
+West Bank and Gaza,edu,Personalization · Education
+West Bank and Gaza,edu,Inervention · Education
+Austria,health,"internal instance of Open WebUI: knowledge management, drafting texts · Health"
+Chile,health,Virtual Analyst for FONASA medical leave management. Objective: Reduce medical leave processing times and shorten payment turnaround by the COMPIN boards
+Chile,health,DART: Artificial intelligence in ophthalmology used by the Ministry of Health (Minsal). Objective: Prevent the development of diabetic retinopathy and improve the availability of ophthalmologists
+Chile,health,Automated coding using natural language processing · Health
+Congo (DRC),health,AI data analysis in the field of the universal health coverage
+Egypt,health,"Title: Breast Cancer (MASA)
+Application Domain Healthcare
+	 
+Technology Domain Computer vision
+Brief:
+Early detection is the most powerful tool in the fight against breast cancer. The Breast Cancer (MASA) AI-driven diagnostic solution supports radiologists and oncologists, enhancing the accuracy of mammogram interpretations, ensuring that life-saving diagnoses happen with an accuracy close to 90% for Egyptian women.
+Description: 
+Breast cancer is the most common cancer occurring in women worldwide. Early diagnosis of breast cancer can lead to proper treatment of affected patients, increase breast cancer survival rates, and significant reduction of treatment costs, personal trauma, and social burden. Screening for early diagnosis and treatment is a major step towards fighting the disease. Using artificial intelligence for screening and early detection can help with the process.
+The Breast Cancer (MASA) solution has been developed using artificial intelligence, specifically computer vision techniques, to assist radiologists and oncologists in breast cancer detection during mammogram-based screening. The center in partnership with the Baheya Foundation created a reliable, and high-quality data set that was be used for training the AI models using mammograms from 60K Egyptian women.
+The solution analyzes mammogram images to detect abnormal masses, classify them as benign or malignant, identify calcifications, detect asymmetrical features between breasts, while considering the breast tissue density according to the ACR classification. Results are presented according to the global BI-RADS standard. The solution accuracy is over 90% for Egyptian women.
+With the deployment of the solution in Baheya hospitals, and solution launch in August 2025, the solution will help automate some of the breast cancer diagnosis tasks, aiding medical staff, reducing the examination costs, increasing the efficiency of this process, and making it available to a larger number of women for periodic checkup"
+Hungary,health,"OkosSzolgáltatások (Healthcare Smart Services) - The OkosSzolgáltatások (Smart Services) platform is middleware accessible through the eMedSolution medical system, which aims to provide single-point access to new, innovative, primarily AI-based smart services developed in the healthcare sector. Currently, the development of platforms displaying care, prescription, laboratory and combined healthcare data, a chat function for healthcare documents, and other applications connected as a result of cooperation with other healthcare organizations is underway · Health"
+Hungary,health,Brainomix (medical imaging with an AI-powered platform that automates validated imaging biomarkers) · Health
+Hungary,health,Colorectal carcinoma detection AI (CRC) · Health
+Hungary,health,"The OkosSzolgáltatások (Smart Services) platform is middleware accessible through the eMedSolution medical system, which aims to provide single-point access to new, innovative, primarily AI-based smart services developed in the healthcare sector. Currently, the development of platforms displaying care, prescription, laboratory and combined healthcare data, a chat function for healthcare documents, and other applications connected as a result of cooperation with other healthcare organizations is underway · Health"
+Jordan,health,Paxera Imaging AI Tools · Health
+Jordan,health,CAD4TB AI  that analyzes digital chest X-rays to detect pulmonary tuberculosi · Health
+Jordan,health,"e-ICU Telehealth solution, AI-Assisted Analytics Uses advanced, predictive algorithms and proprietary data to identify patients at risk of deterioration, allowing for early, proactive intervention · Health"
+Jordan,health,AI Clinical Imaging Reporting · Health
+Jordan,health,Health Data Analytics Platform · Health
+Jordan,health,eICU (Virtual Hospital) · Health
+Mexico,health,Image analysis for early detection of breast cancer · Health
+Mexico,health,Predictive systems · Health
+Mexico,health,Digital pathology · Health
+New Zealand,health,Al is able to transcribe and summarise a clinical conversation/consultation and automatically generate a medical note
+Panama,health,Medical Appointments · Health
+Panama,health,preventive control of chronical deseases · Health
+Peru,health,Auditoria Prestacional con Machine Learning · Health
+Peru,health,Chatbot for SIS-insured members · Health
+Peru,health,AI-based benefit valuation · Health
+Peru,health,QURE AI - Decision support for chest X-ray images · Health
+Peru,health,ENSAP AI virtual assistant guiding users of MINSA's national public health school · Health
+Peru,health,"LLM in an exploration phase, with proper risk management in controlled use cases · Health"
+Philippines,health,KIRA - Katuwang na Impormasyon para sa Responsableng Aksyon - an  AI-powered chatbot delivering timely and reliable health information to the public · Health
+Philippines,health,"DOH Data Collect (DDC) Dashboards, which harness AI-enabled analytics to monitor hospital bed capacity and support real-time decision making · Health"
+Philippines,health,Administrative Issuances · Health
+Portugal,health,"MODE – The Waste Monitoring Model: Detects waste and fraud in healthcare expenditures. Developed with a hybrid approach combining business rules and unsupervised decision-tree learning, it analyzes billing and prescription data to identify anomalies, assigning risk scores from 0 to 1 to patients, doctors, pharmacies, and providers, with higher scores indicating greater risk · Health"
+Portugal,health,"Detect SNS 24: Early detection and prevention of skin cancer. Users can capture images of skin lesions using their smartphones, which are then automatically analyzed by an AI model that compares the patterns against validated clinical image databases. The system assigns a risk score to each lesion, enabling early identification of suspicious cases, reducing the time to medical evaluation, and providing objective support to healthcare professionals in clinical decision-making · Health"
+Portugal,health,"Predictive Coding: Translates data recorded in Electronic Health Records into standardized numeric or alphanumeric formats, allowing diagnoses and procedures to be structured and normalized. High-quality coding is essential not only for accurate hospital financing but also for medical research, epidemiological surveillance, and health system planning · Health"
+Portugal,health,"SICO (Death Certificate Information System) applies artificial intelligence to analyze death certificates in real time. Its main purpose is to identify abnormal patterns in mortality data and detect “risk moments” for public health, such as heatwaves or disease outbreaks, allowing health authorities to anticipate risks, issue alerts, and implement preventive measures more quickly and effectively · Health"
+Saudi Arabia,health,"Tele-Stroke Platform – Ministry of Health: The Tele-Stroke Platform is a virtual urgent-care service provided through Seha Virtual Hospital to support stroke management across Saudi Arabia. The Tele-Stroke Platform provides urgent and specialized care for stroke patients by connecting peripheral hospitals with advanced stroke centers through a virtual medical platform. The platform uses artificial intelligence to support real-time CT scan analysis, accelerate diagnosis, reduce unnecessary patient transfers, improve the utilization of specialized medical personnel, lower operational costs, and enhance the quality of healthcare services"
+Saudi Arabia,health,"SEHA Virtual Hospital — AI-supported virtual consultations, tele-ICU, and remote monitoring (world's largest virtual hospital) · Health"
+Saudi Arabia,health,"Sehhaty - citizen super-app with AI features: symptom guidance, personalized reminders, lab results explanations · Health"
+Saudi Arabia,health,"Tele-Stroke Platform – Ministry of Health: The Tele-Stroke Platform provides urgent and specialized care for stroke patients by connecting peripheral hospitals with advanced stroke centers through a virtual medical platform. The platform uses artificial intelligence to support real-time CT scan analysis, accelerate diagnosis, reduce unnecessary patient transfers, improve the utilization of specialized medical personnel, lower operational costs, and enhance the quality of healthcare services · Health"
+Saudi Arabia,health,Chronical disease screening · Health
+Saudi Arabia,health,Disease surveillance & outbreak forecasting — early-warning models on notifiable diseases and hospital admissions · Health
+Saudi Arabia,health,"Sehhaty AI scheduling & triage — appointment prioritization, no-show prediction, symptom triage · Health"
+Singapore,health,AI 360 View · Health
+Singapore,health,Ask MOH · Health
+Singapore,health,Claims Fraud Detection · Health
+Singapore,health,AI 360 Regulation · Health
+Singapore,health,Aberration Check · Health
+South Sudan,health,"1. Disaster Management and Forecasting: The South Sudan Red Cross (SSRC) and OCHA use INFLOW-AI to forecast Nile flooding using transformer models, allowing for anticipatory funding and faster disaster response. AI algorithms and neural networks have also been used to predict flood risks with high accuracy. 
+2. Agricultural Support: AI-powered mobile solutions, such as Smart Cassava, are being introduced for crop diagnosis and severity analysis. Machine learning models (like CropGuard) are used to detect and drive away birds to protect crops
+3. Disaster Communication Chatbots: UNESCO has trained personnel on AI chatbots to disseminate disaster information, identify safe locations, and improve disaster response efficiency"
+Thailand,health,AI Chest X-ray (pulmonary tuberculosis and lung cancer detection) · Health
+Thailand,health,MOR-ASR Documentation · Health
+Thailand,health,Ai Retina (Diabetic retinopathy detection) · Health
+Thailand,health,Medical document summarization · Health
+Turkiye,health,"Turkish Brain Project: By analyzing MRI scans of patients with brain tumors, artificial intelligence algorithms can be trained, and with the help of advanced scientific techniques, abnormal areas in the brain can be identified and subsequently classified"
+Turkiye,health,Digital Eye – Mammography Project: aims to revolutionize the early diagnosis of breast cancer. The goal is to enhance the accuracy of radiologists’ mammography evaluation processes and minimize issues arising from human error through a newly developed AI-powered decision support system. The AI model analyzes mammography images to identify high-risk cases and prioritizes these for review by radiologists
+Turkiye,health,"Digital Eye – Liver Project: The project performs AI-powered mass detection and classification. The AI models developed were integrated into the reporting system of the Ministry of Health’s Cancer Early Diagnosis Screening and Education Center, and the system’s first version was put into use. This provided support to relevant specialists for the faster and prioritized reporting of patients with potentially malignant masses. Additionally, an AI-based decision support system was provided to radiologists for testing purposes during the review of patients’ mammography images at hospitals affiliated with Başkent and Ankara Universities"
+Turkiye,health,AI-Based Decision Support System for Mammography Images: AI-assisted radiological decision support for early breast cancer detection in mammography screening · Health
+Turkiye,health,Brain CT Stroke AI Project: Automatic detection of stroke (hemorrhage/occlusion) from CT images · Health
+Turkiye,health,"MKYS Artificial Intelligence Project: To extract product attributes from free-text medical supply records, standardize the data, and detect duplicate entries to improve data quality · Health"
+Ukraine,health,"Digital vision screening using artificial intelligence – a project aimed at the early detection of retinal damage in patients with diabetes, with a view to ensuring timely referral to an ophthalmologist and reducing the risk of vision loss · Health"
+Ukraine,health,"The use of artificial intelligence to analyse CT scan results – healthcare facilities are introducing AI-based solutions for analysing CT scans, enabling doctors to assess scan results more quickly and accurately · Health"
+Ukraine,health,Artificial intelligence helps diagnose tuberculosis and other lung conditions — results of using state-of-the-art equipment in Ukraine · Health
+Benin,infra,Smart data anonymization: A module that automatically identifies personal data in structured data or documents using LLMs
+Benin,infra,"Intelligent Document Processing: Extract structured data from documents such as passports, land surveys, or birth certificates. Enables automatic processing of requests through AI agents"
+Cambodia,infra,TranslateKH -  A machine translation tool for both English -> Khmer and Khmer -> English
+Canada,infra,DEEPL PRO: Translation solution · Civil Service
+Czechia,infra,"AI assistant for preparation of municipal IT strategies(""informační koncepce""). Purpose: use of AI (generative AI, LLM and NLP) to support municipalities in preparing municipal  ICT strategies through guided questionnaires, recommendations, and structured outputs, addressing capacity gaps in local public administrations"
+Philippines,infra,Single Content Management System · Civil Service
+Argentina,prod,Trayectoria formativa en IA
+Australia,prod,"AI for Operational Blueprint (OB – Knowledge Management): AI for OB is a digital tool that helps staff quickly find clear and consistent information they need to support people in using Services Australia’s payments and services. It is designed to benefit frontline staff and, in turn, the public, by making it easier to locate the right guidance without searching through long or complex documents. The initiative was developed to address delays, confusion, and errors caused by difficult information searches, and to give staff more time to focus on helping people with their individual needs"
+Australia,prod,"CLIKChat – an internal chatbot that supports Department of Veterans’ Affairs that summarises information from publicly available government sources – is designed to help staff easily navigate publicly available policy and compensation information and aims to improve the speed and accuracy of information for claims teams. The tool draws solely on public, non-personal information"
+Australia,prod,"TM Checker is IP Australia's free trade mark availability check designed to lower the bar of entry for small to medium businesses by simplifying the learning process of a complex IP system. The tool allows customers to check the potential registrability of their trademarks and then proceed through the application process. TM Checker guides customers through a step-by-step process. It leverages AI-powered search tools to identify potential issues. This includes similarity and distinctiveness, the most common reasons for rejection"
+Austria,prod,GovGPT
+Austria,prod,AI in the Electronic file management system
+Austria,prod,Grants4Companies
+Azerbaijan,prod,Voice Bot
+Azerbaijan,prod,Document Management System
+Azerbaijan,prod,Digital Twin for Transport
+Belgium,prod,"Chatbots DIV, Bea, Dofi etc"
+Belgium,prod,Belgium's AI Antenna BE-AIFA
+Bhutan,prod,Chatbot
+Bhutan,prod,Dzongkha NLP
+Bhutan,prod,chatbot for RCSC · Civil Service
+Burkina Faso,prod,"Meta Oeil, accident-detection solution using urban video surveillance images"
+Burkina Faso,prod,Registration platform for direct civil service exams · Civil Service
+Burkina Faso,prod,Registration platform for civil service professional exams · Civil Service
+Burkina Faso,prod,Electronic grading platform for candidates' exam papers · Civil Service
+Burkina Faso,prod,Online Access System for Administrative and Payroll Information (ALIAS) · Civil Service
+Burkina Faso,prod,"econcours.gov.bf, online registration for professional exams · Civil Service"
+Burkina Faso,prod,Integrated mission workflow (developed by ANPTIC) · Civil Service
+Cambodia,prod,EKYC
+Cambodia,prod,Sarika - A text to speech platform for Khmer language
+Canada,prod,"Canada’s Pre-load Air Cargo Targeting: A system that uses AI to detect risks in air cargo shipment data, making the transport of air cargo more secure and reducing the risk that concealed explosive devices or threat items cause harm to the transportation sector and the traveling public"
+Canada,prod,Microsoft Copilot: General-purpose generative AI solution · Civil Service
+Canada,prod,GitHub Copilot: Generative AI solution specialized in programming code generation and application development support · Civil Service
+Canada,prod,"Artificial Intelligence Virtual Assistant (AIVA): Automates pay intake, calculations, and document handling, with all outputs reviewed, validated, and approved by compensation professionals.
+
+The Compensation Virtual Assistant chatbot provides timely, reliable answers drawn from over 80,000 business rules, 150+ collective agreements, and more than 40,000 pages of directives, terms and conditions, and salary tables.
+
+AIVA is a key component of the Government of Canada’s compensation services modernization. It supports the transformation of the HR-to-Pay intake process from a manual, transaction-based model to an efficient, data-driven, and client-centric approach. By combining intelligent automation with a user-friendly interface, AIVA reduces administrative burden, accelerates intake processing, and enables Compensation Advisors to focus on higher-value work · Civil Service"
+Chile,prod,In-depth search of public background records for candidates to senior public management positions · Civil Service
+Congo (DRC),prod,AI State exam correction (Snote Manager)
+Congo (DRC),prod,AI data mining exploration and analysis
+Costa Rica,prod,Traffic management
+Costa Rica,prod,AI-based solution to improve women's care services
+Costa Rica,prod,AI and Big Data for budgeting
+Ethiopia,prod,Mela Agent
+Ethiopia,prod,smart court systems
+Greece,prod,"Contracts' check in Cadastre: AI recognizes the content of contracts, identifies critical legal elements, and automatically generates recommendations to the supervisor, who makes the final decision"
+Greece,prod,Goal Setting · Civil Service
+Greece,prod,“Procedures” · Civil Service
+Greece,prod,WorkForce Plan · Civil Service
+Greece,prod,Performance Management · Civil Service
+Greece,prod,Workforce Planning · Civil Service
+Guatemala,prod,ChatGPT - Personal assistant for public servants
+Guatemala,prod,Gemini
+Guatemala,prod,Copilot
+Hungary,prod,"AI-assisted service management in the Municipality ASP service (centrally provided SaaS package of specialised softwares for the 3200 local municipalities in Hungary): Since a significant share of incoming incident tickets are not actual faults but stem from users’ lack of knowledge, an AI‑based self‑learning algorithm has been introduced to support back‑office ticket handling, significantly easing the workload of service managers. (Similar AI-assisted pilots are ongoing in different sectors, mostly based on in-house developments.)"
+Hungary,prod,Piloting the use of Microsoft Copilot in office work
+Hungary,prod,The Hungarian Governmental Personnel Decision Support IT System (EU funded project). Main purpose: workflow automation and knowledge management · Civil Service
+Jamaica,prod,PICA Customer Relationship Manage System · Civil Service
+Jamaica,prod,MyHR+ · Civil Service
+Jamaica,prod,IrieFins · Civil Service
+Jordan,prod,chatbot (RAG) · Civil Service
+Jordan,prod,AI Driven Question Generation · Civil Service
+Kazakhstan,prod,Egov AI
+Kazakhstan,prod,Eotinish AI - E appeals platform
+Kazakhstan,prod,Prevention of industrial injuries · Civil Service
+Kenya,prod,chat boat and AI in agriculture
+Kenya,prod,https://scholarmedia.africa/agribusiness/ai-in-agriculture-how-kenyan-farmers-benefit-from-plantvillage-nuru-app/
+Kenya,prod,https://automag.co.ke/2025/09/01/how-ai-traffic-systems-reduce-nairobi-congestion/
+Kosovo,prod,Monitoring and alert for decision making via Whole of Government platform
+Kosovo,prod,AI selected training for public administration
+Kosovo,prod,"Currently, the HRMIS generates standard reports and statistics; however, no AI/ML-based functionalities are implemented · Civil Service"
+Lesotho,prod,Agric - Extension Advisory Services
+Lesotho,prod,"Integrations with other systems
+1. Integration with Home Affairs ID system where comparison of IDs is made and discrepancies reported · Civil Service"
+Lesotho,prod,Integration with Budget System where payroll data is shared to inform budget projection · Civil Service
+Lesotho,prod,Integration with Central deduction Administration System to load voluntary deductions into payroll module · Civil Service
+Mexico,prod,Chatbot 24/7
+Mexico,prod,Chatbot Turismo
+Myanmar,prod,Legal Assistant AI Model
+Myanmar,prod,Safe City Surveillance System
+Nepal,prod,SSF Insurance Claim process via RPA · Civil Service
+New Zealand,prod,AI to speed up Contact Centre call transcriptions
+New Zealand,prod,Safe general use of large language models to increase productivity. problem or purpose Provide access to Generative Al technology in a cost-effective way. Prevent leakage of agency information
+Panama,prod,Early Warning and Disaster Simulation System - SINAPROC
+Peru,prod,Curia
+Peru,prod,EleccIA
+Peru,prod,YachAI bot
+Philippines,prod,eGov AI (available in the eGovPH superapp )
+Philippines,prod,Project MINAI- Managed Intelligent Network for Advanced Insight · Civil Service
+Poland,prod,Virtual assistant in mObywatel
+Poland,prod,Assistant in EZD RP
+Poland,prod,RAGs in ministries
+Portugal,prod,Its name is ‘Vitor’. It is a tool designed to answer queries and provide information on the DGAEP’s FAQs · Civil Service
+Saudi Arabia,prod,"Verification System – Ministry of Human Resources and Social Development:
+This AI solution supports compliance and control over establishment data by using artificial intelligence and natural language processing to assess whether an establishment’s trade name aligns with its declared economic activity. It processes unstructured text, detects ambiguity and inconsistencies, and automatically classifies results to support regulatory reporting and decision-making, improving data accuracy, regulatory efficiency, and market transparency"
+Saudi Arabia,prod,AI Cybersecurity Advisor - AI-powered cybersecurity advisor that automatically converts conditional rules written in different query languages into the unified query language used in the ministry’s cyber threat detection systems. This helps strengthen monitoring and detection capabilities for cybersecurity threats across employee devices and ministry platform servers · Civil Service
+Saudi Arabia,prod,Musaned AI Interview Service - AI-powered behavioral assessment of domestic workers via virtual interviews using facial expression and voice pattern analysis · Civil Service
+Saudi Arabia,prod,"Verification System – Ministry of Human Resources and Social Development:
+This AI solution supports compliance and control over establishment data by using artificial intelligence and natural language processing to assess whether an establishment’s trade name aligns with its declared economic activity. It processes unstructured text, detects ambiguity and inconsistencies, and automatically classifies results to support regulatory reporting and decision-making, improving data accuracy, regulatory efficiency, and market transparency · Civil Service"
+Saudi Arabia,prod,\ AI Cybersecurity Advisor - AI-powered cybersecurity advisor that automatically converts conditional rules written in different query languages into the unified query language used in the ministry’s cyber threat detection systems. This helps strengthen monitoring and detection capabilities for cybersecurity threats across employee devices and ministry platform servers · Civil Service
+Singapore,prod,Pair Chat - A secure AI chatbot for public officers' daily tasks
+Singapore,prod,AIBots - platform for Public Officers to create customised Generative AI chatbots
+Singapore,prod,"Transcribe, a speech-to-text platform that allows public officers to instantaneously receive live transcriptions of their source materials"
+Singapore,prod,Pair Chat · Civil Service
+Singapore,prod,Query@Gov HR Chatbot - To respond to Employee queries on HR policies · Civil Service
+Singapore,prod,Job Description Generation - Generate Job description for roles to be hired in the agency · Civil Service
+Singapore,prod,Query@Gov Chatbot - To answer Employee's queries on HR Policies · Civil Service
+Singapore,prod,Orion CV Screening -To screen CVs of potential applicants to public sector jobs · Civil Service
+South Sudan,prod,Smart Casava
+South Sudan,prod,South Sudan Disaster Communication Chatbots:
+Tajikistan,prod,Smart City cameras and traffic control
+Thailand,prod,Ask AI
+Thailand,prod,Facial Recognition Technology : FRT
+Thailand,prod,MOT Executive Dashboard
+Thailand,prod,M365 Copilot · Civil Service
+Thailand,prod,Check the Photos of government officials · Civil Service
+Turkiye,prod,"Kariyer Kapısı: A career platform developed through e-Government integration to enhance merit and competence in employment and to share job and internship postings with the public in an effective, transparent, and reliable manner · Civil Service"
+Turkiye,prod,"Kamu Personel Bilgi Sistemi: The Public Personnel Information System (KPBS/PBS) is a system operated by the Presidency of Strategy and Budget that centralizes all data related to public sector employees—including personnel records, appointments, staffing, leave, and disciplinary actions—in a centralized digital platform. Its objectives are to reduce bureaucracy, save time and labor, lower error rates, and provide efficient and transparent human resources management · Civil Service"
+Turkiye,prod,Kariyer kapısı · Civil Service
+Turkiye,prod,Public Personnel Information System · Civil Service
+Uganda,prod,"AI-HR ASSISTANT ;- This is a chatbot embedded in our Electronic Document Management System that supports HR related queries, consultations about staff administration"
+Uruguay,prod,Agesic - AI-based automation of ticket assignment in Agesic's ServiceDesk system
+West Bank and Gaza,prod,no applications
+Australia,tax,"Documents Register Agent.
+
+Finance developed the Document Register Agent (DRA) an AI-enabled tool that supports a business area to extract and record key information from documents. It uses AI and automation to extract key information from documents and store it in a consistent format. DRA was developed to improve access to historical records, reduce duplication of work, and address problems caused by broken links, inconsistent document formats and limited searchability · Public Finance"
+Australia,tax,"GovAI Chat.
+
+GovAI Chat is a secure, government-controlled generative AI tool developed specifically for the Australian Public Service (APS).  
+The goal of GovAI Chat is to give public servants access to the advanced AI capabilities of a contemporary chat interface tailored to the APS context – with the security, compliance, and public sector knowledge embedded in the GovAI environment · Public Finance"
+Australia,tax,Tax Time Nudging – help reduce taxpayer compliance costs and improve the efficiency of the tax system · Tax
+Australia,tax,MyID Fraud Detection - myID digital platform provides an easy and secure way for individuals to prove their identity and access a range of government online services. We use AI to scan all myID accounts to identify and risk score the likelihood of digital identity theft (third-party fraud) · Tax
+Australia,tax,AI-assisted Law Interpretation and Insight – AI learns from law frameworks and precedential rulings to suggest correct application of the law. This helps clients understand and comply with legislation correctly and helps case officers make consistent decisions · Tax
+Austria,tax,"Fraud Detection - Employee tax assessment, Child benefit and many more · Public Finance"
+Austria,tax,Digitization of land registries · Public Finance
+Austria,tax,for everything · Public Finance
+Austria,tax,Predictive Analytics - Fraud Detection · Tax
+Austria,tax,TMIS Ecosystem · Tax
+Belgium,tax,Artificial intelligence for social fraud detection by the National Social Security Office (RSZ)
+Benin,tax,CUSTOMS WEBB - Fraud detection in customs declarations - customs information system · Public Finance
+Benin,tax,eRepertoire · Public Finance
+Benin,tax,SECUROUTE - detection of deviant behavior in road checks · Public Finance
+Benin,tax,Chatbot for inquiries about the procedure · Procurement
+Benin,tax,Voice assistant for information gathering · Procurement
+Benin,tax,Analysis of submitted documents · Procurement
+Brazil,tax,Tax Collection
+Burkina Faso,tax,"BeatMonitor, used by the copyright office to detect the use of creative works on TV, radio, and in bars and restaurants, and to generate a dashboard that facilitates royalty distribution"
+Cambodia,tax,"GDT Chatbot – BEAURAMEI, it works as an official digital service to provide tax-related information, announcements, and general assistance to the public 24H/7 · Tax"
+Cambodia,tax,"GDT Lucky Draw Bot, it operates the GDT Telegram Lucky Draw Bot as an official digital service to allow users to conveniently submit invoices or receipts paid to businesses, participate in the tax lucky draw program, and receive related tax information and announcements · Tax"
+Canada,tax,"Public Service and Procurement Canada’s GC Translate: A self-service language hub that provides employees with access to a variety of secure, real-time AI-driven language tools, trained with Canadian data"
+Canada,tax,Employment and Social Development’s Temporary Foreign Worker Program (TFWP) Labor Market Impact Assessment (LMIA) and Fraud Detection: The project aims to develop an RPA/AI-generated report that enhances TFWP officers' efficiency in reviewing LMIA by automating data analysis and identifying potential fraud
+Canada,tax,"Microsoft Copilot: Act as a ""virtual assistant"" to improve productivity by executing tasks automatically or suggesting solutions based on artificial intelligence · Procurement"
+Canada,tax,Digital Identity Verification · Tax
+Canada,tax,"Genni - Provide a secure Protected B GenAI platform for personal productivity, integration into business flows with RAG and system prompt capabilities · Tax"
+Canada,tax,Custom tool for proof of concept purpose: Fraud detection proof of concept · Public Finance
+Canada,tax,automated risk assessment tool · Tax
+Chile,tax,Predictive model for proactive inspections by the Labor Directorate (DT). Objective: Increase the effectiveness of proactive inspections
+Chile,tax,LLM Observatory Tool - Detection of irregularities in procurement processes · Procurement
+Chile,tax,Agent to support the evaluation of tenders · Procurement
+Chile,tax,Price comparator - Price comparison by matching products across purchasing channels and comparing with the market · Procurement
+Chile,tax,Content search engine for the www.sii.cl website · Tax
+Chile,tax,Chatbot supporting case-law research · Tax
+Chile,tax,PoC for developing an API with AI · Tax
+Chile,tax,Agent-assisted tender evaluator - Automatically evaluate public tender offers to determine the winning bid based on the selection criteria · Procurement
+Chile,tax,LLM Observatory - Detection of irregularities in procurement processes · Procurement
+Chile,tax,Price comparison - matching products across purchasing channels and the market to identify inefficiencies in public procurement · Procurement
+Czechia,tax,AI pilot project in the central filing office of the Ministry of Interior for distributing delivered digital submissions
+Czechia,tax,Anakonda - automation of funds targeting regional development · Procurement
+Czechia,tax,Checker -  automated evaluation of requests for funds targeting low amount contracts · Procurement
+Czechia,tax,Meeting minutes automation · Procurement
+Czechia,tax,"POC ADAM - The aim of the service was to develop, test, and evaluate a functional prototype of an internal chatbot with AI elements, based on selected implementation structure documents, with a focus on error rate. The chatbot is intended to answer questions, provide · Tax"
+Czechia,tax,Zakazky.gov - AI assistant for searching from within currently available public contracts · Procurement
+Czechia,tax,Checker - automation of document validation of small public contracts · Procurement
+Greece,tax,"GEMINI – Tax data and other relevant economic data, data sources, legislation, complex questions regarding legislation, tax simulations based on special designed prompts · Tax"
+Greece,tax,"CHATGPT - inquiries concerning legislation and several special tax issues , best practices in EU · Tax"
+Greece,tax,"COPILOT - Tax data and other relevant economic data, data sources, legislation, complex questions regarding legislation, tax simulations · Tax"
+Hungary,tax,"Personal Income Tax Chatbot, for answering questions that the taxpayers ask from our customer service · Tax"
+Hungary,tax,"CustomGPT for eVAT and Onlne Invoice systems, the main purpose is to give technical support for programmers using these systems · Tax"
+Hungary,tax,MiniMaxAI/MiniMax-M2.5 - Accounting rule base optimalization for reporting consolidation · Public Finance
+Hungary,tax,IBM Watson – Analysis and prediction · Public Finance
+Hungary,tax,Internal developed ML model - Forecasting · Public Finance
+Hungary,tax,On-site inspection selection support · Tax
+Hungary,tax,X-ray image analysis support of customs inspection · Tax
+Hungary,tax,Invoice item categorisation · Tax
+Jordan,tax,Smart declarations system · Tax
+Jordan,tax,Smart assistant for the Income and Sales Tax Department---AI Chat · Tax
+Jordan,tax,Using artificial intelligence in declarations · Tax
+Jordan,tax,Smart assistant for the Income and Sales Tax Department · Tax
+Kazakhstan,tax,AI assistant for generating technical specifications · Procurement
+Lesotho,tax,Customer Relationship Management Gen AI chatbot - customer engagements · Tax
+Lesotho,tax,Invoice Anomalies Detection Predictive ML Model - Detection of fraudulent VAT invoices · Tax
+Lesotho,tax,Non-Fillers Predictor ML Model - Predict taxpayers likely not to file in the next period · Tax
+Malaysia,tax,Income Tax Fraud Detection
+Mexico,tax,Customs risk model
+Nepal,tax,Chatbot for General Public to know about taxation Process · Tax
+Nepal,tax,Risk Engine · Tax
+Nepal,tax,Report Engine · Tax
+Panama,tax,Microsoft Copilot · Procurement
+Panama,tax,ChatGPT · Public Finance
+Panama,tax,COPILOT · Public Finance
+Panama,tax,Gemini · Public Finance
+Panama,tax,Pre-filling of sworn declarations · Tax
+Panama,tax,"Prompting Agent (in pilot) - a model trained to answer questions related to Public Procurement processes, limited to current regulations. The expectation is to make it available to answer general inquiries, reducing the operational load on the Customer Service Directorate · Procurement"
+Panama,tax,"2nd Pilot about to go live - 'Pre-analysis of technical criteria for the review workflow used by the Exceptional Procedure Directorate' (PREDIPEC), which automatically identifies suspected contract splitting, content analysis, and patterns across procurement documents · Procurement"
+Panama,tax,3rd Pilot about to go live - a 'Terms of Reference Template Generator' that enforces the required technical structure within the legal context. This will reduce the level of technical queries routed to specialists at the DGCP (General Directorate of Public Procurement) · Procurement
+Panama,tax,"Data exploitation system currently in operation, · Tax"
+Panama,tax,Anomaly detector · Tax
+Panama,tax,Risk scoring · Tax
+Peru,tax,"Agents to evaluate and propose improvements to the routine control selection system. Reviews ML models, identifies improvement opportunities, and proposes algorithm corrections for data scientists to review, in order to improve the risk management model · Tax"
+Peru,tax,RAG for querying institutional documents in oversight/audit processes · Tax
+Peru,tax,Agent for handling appeal requests · Tax
+Peru,tax,ANDREA · Public Finance
+Peru,tax,MATIAS · Public Finance
+Peru,tax,AI platform for Conectamef · Public Finance
+Philippines,tax,"Gemini for Workspace – AI-powered productivity and document assistance for drafting communications, summarizing documents, generating reports, and supporting administrative workflows · Procurement"
+Philippines,tax,"Project (Managed Intelligent Network for Advanced Insight)  MINAI- an internal Chatbot for DBM, where in we have ingested DBM documents, such us the Budget, legal documents, Office order and circulars. then that's the time that we could utilized the system · Public Finance"
+Philippines,tax,"Subscription to Single Content Management System (SCMS) with Chatbot Integration-The Department of Budget and Management (DBM) proposes the Subscription to a Single Content Management System (CMS) with Chatbot Integration to unify, modernize, and secure the management of DBM-managed websites. The project will consolidate multiple portals under a centralized content management platform and integrate AI-powered chatbots to enhance accessibility, transparency, and user engagement across DBM’s digital platforms.
+This initiative directly supports the Open Government Partnership (OGP) transparency goals by providing citizens and stakeholders with faster, more reliable access to budget and financial information, while ensuring a consistent brand identity and efficient content governance across all DBM online properties · Public Finance"
+Philippines,tax,"Revie, BIR's chatbot/digital assistant: Customer Service and Letter of authority (LOA) verifier · Tax"
+Philippines,tax,Online Registration and Update System (ORUS) uses a registration AI that uses Optical Character Registration (OCR) · Tax
+Philippines,tax,BIR's Risk-based audit selection tool is a predictive AI which uses ML algorithms to analyze tax returns to predict which taxpayers are most likely to have under-declared · Tax
+Philippines,tax,Subscription to Managed Intelligent Network for Advanced Insights (MINAI) Solution for the Department of Budget and Management (DBM) · Public Finance
+Philippines,tax,Subscription to Single Content Management System with AI Chatbot Integration · Public Finance
+Philippines,tax,Renewal of Subscription to Budget Data Analytics and Data Exchange Platform License and Support · Public Finance
+Philippines,tax,"Risk-Based Audit Selection System. Per RMO 1-2026, it uses and identifies statistical outliers by comparing a taxpayer's data against industry benchmarks · Tax"
+Philippines,tax,"Revie: Using Natural Language Processing (NLP), it filters/categorizes taxpayer queries using IRIS data to verify user's status before escalating a workflow to a human revenue officer · Tax"
+Poland,tax,Anonymizer removes PII from documents before their publication · Procurement
+Poland,tax,Basic metadata extractor pulls data from a PDF judgment and places it into an Excel file · Procurement
+Poland,tax,Preliminary formal assessment of an appeal. Metadata extraction from numerous documents of various structures – · Procurement
+Portugal,tax,Robotic Process Automation (RPA) · Public Finance
+Portugal,tax,"AI-powered Document Intelligence Assistant that enables users to query, analyze, and automatically summarize collections of documents with traceable sources · Public Finance"
+Portugal,tax,"S3CP - Public sector expert system designed to validate compliance of control processes, ensuring sound public financial management, transparency, and accountability within a budgetary entity or across the public administration · Public Finance"
+Portugal,tax,Ebalcão Inteligente – Support triage and response at the digital service desk (ebalcão) · Tax
+Portugal,tax,CATIA - Virtual Assistant · Tax
+Portugal,tax,CATIA – Virtual Chat Bot · Tax
+Saudi Arabia,tax,"Rased AI Product – Zakat, Tax and Customs Authority:
+Rased is an artificial intelligence solution launched by the Zakat, Tax and Customs Authority to forecast incoming and outgoing vehicle movements at land ports. It uses advanced algorithms and predictive analytics based on internal and external factors affecting vehicle flow, providing forecasts at the daily and hourly levels. The solution supports proactive border readiness, improves operational planning and resource allocation, reduces congestion, enhances security, and improves the experience of travelers and land freight operators"
+Saudi Arabia,tax,"Generative AI smart assistant that provides beneficiaries with direct access to information on national systems, primarily the Government Tenders and Procurement Law and its implementing regulations, using an approved knowledge base · Procurement"
+Saudi Arabia,tax,An AI-enabled smart assistant available on Etimad Platform to provide instant responses to user inquiries and support beneficiaries in accessing information related to government procurement and financial services · Procurement
+Saudi Arabia,tax,Etimad Developer Portal / Government Contract Data Inquiry API - API-based access to reliable and updated government contract data for integration with beneficiary systems · Procurement
+Saudi Arabia,tax,"Etimad GPT - Generative AI smart assistant that provides beneficiaries with direct access to information on national systems, primarily the Government Tenders and Procurement Law and its implementing regulations, using an approved knowledge base · Public Finance"
+Saudi Arabia,tax,An AI-enabled smart assistant available on Etimad Platform to provide instant responses to user inquiries and support beneficiaries in accessing information related to government procurement and financial services · Public Finance
+Saudi Arabia,tax,Etimad Developer Portal / Government Contract Data Inquiry API - API-based access to reliable and updated government contract data for integration with beneficiary systems · Public Finance
+Saudi Arabia,tax,"Rased is an artificial intelligence solution launched by the Zakat, Tax and Customs Authority to forecast incoming and outgoing vehicle movements at land ports. It uses advanced algorithms and predictive analytics based on internal and external factors affecting vehicle flow, providing forecasts at the daily and hourly levels. The solution supports proactive border readiness, improves operational planning and resource allocation, reduces congestion, enhances security, and improves the experience of travelers and land freight operators · Tax"
+Saudi Arabia,tax,AskZiyad (Public Chatbot – taxpayer support and guidance) · Tax
+Saudi Arabia,tax,AI Product Classification System (HS code classification automation) · Tax
+Saudi Arabia,tax,"Etimad GPT - Generative AI smart assistant that provides beneficiaries with direct access to information on national systems, primarily the Government Tenders and Procurement Law and its implementing regulations, using an approved knowledge base · Procurement"
+Saudi Arabia,tax,"Etimad GPT Generative AI smart assistant that provides beneficiaries with direct access to information on national systems, primarily the Government Tenders and Procurement Law and its implementing regulations, using an approved knowledge base · Public Finance"
+Saudi Arabia,tax,"Rased - AI-based operational product for managing border crossings by forecasting incoming and outgoing vehicle traffic using historical, weather, seasonal and operational data; supports port readiness, resource allocation, shift scheduling and congestion reduction · Tax"
+Saudi Arabia,tax,ERAD: Taxation system · Tax
+Saudi Arabia,tax,"Ask Ziyad digital assistant - AI digital assistant supporting ZATCA beneficiaries with zakat, tax and customs information and service guidance · Tax"
+Singapore,tax,"Instruction Manual (IM) Query Chatbot, allows users to query on procurement IM · Procurement"
+Singapore,tax,Specification Drafter to allow users to generate a first draft of requirement specifications using a combination of historical requirement specifications and users prompts · Procurement
+Singapore,tax,"Small Value Purchase (SVP) Assistant helps users navigate small value procurement rules and processes, providing direct links to relevant procurement guidelines, internal workflow procedures, and user guides · Procurement"
+Singapore,tax,Virtual Intelligent Chat Assistant (VICA) - provide answers to public enquries · Public Finance
+Singapore,tax,Virtual Intelligent Chat Assistant (VICA): AI powered IRAS Bot to automate and enhance taxpayer enquiry handling · Tax
+Singapore,tax,Intelligent Network Analysis Tool (iNAT): In house network analysis tool that maps and analyses taxpayer relationships to strengthen compliance and investigative work · Tax
+Singapore,tax,Smart Writing Engine for Emails (SWEE): In house GenAI writing assistant · Tax
+Singapore,tax,Procurement Workload Forecast Dashboard - Allows agencies to do a 6 months forecast of possible workload based on past trends (2 or 3 years). Also help agency identify possible spike in procurement workload in the upcoming month(s) so that adequate manpower can be planned beforehand · Procurement
+Singapore,tax,Category Code Recommender - Automatically recommends the most relevant procurement category code · Procurement
+Singapore,tax,Procurement Documents Drafter - Allows agencies to generate documents based on their chosen documents such as Specifications and Approval of Requirements · Procurement
+Singapore,tax,AI for FI - A GenAI custom-built python application that empowers finance officers or business users to obtain quick insights (in the form of natural language narrative and visualisation charts) from finance-related data by asking natural language queries without requiring any prior knowledge of structured query language (SQL) or data analytics · Public Finance
+Singapore,tax,Cumulus - PRISM Machine Learning for Predicting Late Supplier Payments. Machine Learning Model to analyse historical patterns within supplier invoices and predict late supplier payments. This will allow agencies to take pre-emptive actions to mitigate the risk of late supplier payments and to achieve WOG KPI on prompt payment · Public Finance
+Singapore,tax,"AGEM - Audit Insights & Reporting (AIR) Tools. GenAI Bots used to detect discrepancies in transactions, accuracy and completeness of documentation, and checks against SOPs to detect non-compliance against policy and best practices · Public Finance"
+Tajikistan,tax,accounting of individuals · Tax
+Tajikistan,tax,Accounting for individuals · Tax
+Tajikistan,tax,"Registration in the ""My Tax"" mobile application · Tax"
+Tajikistan,tax,Registration as an individual entrepreneur · Tax
+Thailand,tax,Copilot · Procurement
+Thailand,tax,ChatGPT · Procurement
+Thailand,tax,"Chat GPT – research, analyze data · Public Finance"
+Thailand,tax,"Gemini – research, analyze data · Public Finance"
+Thailand,tax,Notebooklm – presentation · Public Finance
+Thailand,tax,Nong Aree: Provides tax-related inquiry services for the public · Tax
+Thailand,tax,RD - DocChat: Answers questions based on relevant documents · Tax
+Thailand,tax,RD - DocGen: Generates official government correspondence · Tax
+Turkiye,tax,Summarization of complaint appeal · Procurement
+Turkiye,tax,AI supported accounting and Advanced Analytic Platform to detect anomalies on public expenditure · Public Finance
+Turkiye,tax,SARP: A computer program known as the “Fake Document Risk Analysis Program” (SARP) has been developed to analyze the risk profiles of taxpayers who issue fake invoices using a quantitative measurement method. This program calculates a monthly risk score for all active value-added tax taxpayers in Türkiye · Tax
+Turkiye,tax,"OZELGE Project: This project aims to identify similar records by analyzing data in the ruling database using Artificial Intelligence, automate manual query processes, and ensure full digital integration with the Revenue Administration’s Ruling Commission. By developing an automation infrastructure capable of quickly providing the most appropriate and accurate responses to taxpayer requests, the project aims to enhance operational efficiency while maximizing tax compliance and taxpayer satisfaction · Tax"
+Turkiye,tax,AI Supported Accounting and Advanced Analytic Platform to detect anomalies on public expenditure · Public Finance
+Turkiye,tax,"Ozelge: This project aims to identify similar records by analyzing data in the ruling database using Artificial Intelligence, automate manual query processes, and ensure full digital integration with the Revenue Administration’s Ruling Commission. By developing an automation infrastructure capable of quickly providing the most appropriate and accurate responses to taxpayer requests, the project aims to enhance operational efficiency while maximizing tax compliance and taxpayer satisfaction · Tax"
+Uganda,tax,"Intergrated Financial Management System (Oracle Enterprise Business Suite) Configuration Support – an NLP agent extracts a snapshot of the current system configuration state, covering workflow and business logic, security rules, role segregation, and cross-MDA data access conditions. It then analyses existing configurations to recommend workflow optimisations, security hardening measures, and data validation checks aligned with best practices. Rule-based integrity checks validate that proposed configurations will not violate data integrity, security, or compliance requirements. AI-assisted test scripts and data scenarios are generated to validate new configurations in the test environment before migration to production · Public Finance"
+Uganda,tax,"Electronic Document and Records Management System; AI-assisted document review, upload, and classification across systems; personalized document search and preference-based notifications; and AI-powered retrieval and summarisation of archived documents—including policies and treasury instructions—with results linked directly to source documents · Public Finance"
+Uganda,tax,"AI-assisted call center dynamically generates accurate, policy-compliant responses to citizen enquiries by processing natural-language prompts against Treasury knowledge bases and operational workflows. The system routes complex questions to the appropriate specialist, and provides agents with real-time suggested replies, reducing average handle times and improving overall service quality · Public Finance"
+Uganda,tax,Image analysis for NII · Tax
+Ukraine,tax,No AI projects are currently deployed or piloted · Public Finance
+Uruguay,tax,"ANCAP (National Fuel, Alcohol and Portland Cement Administration) - Demand forecasting for diesel, gasoline, and liquefied petroleum gas (LPG)"
+Uruguay,tax,Phyton · Public Finance
+Uruguay,tax,Chat GPT / Copilot · Public Finance
+West Bank and Gaza,tax,"power BI   for reports  from payroll system , financial  system  ,  tax system and customs  · Public Finance"
+West Bank and Gaza,tax,Power BI · Tax

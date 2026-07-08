@@ -366,6 +366,7 @@ plot_barrier <- function(data, q, country_name, scope = "compare", base = "agenc
   if (nrow(marker) > 0) {
     p <- p + geom_point(data = marker,
                         aes(x = xmid, y = forcats::fct_rev(factor(constraint))),
+                        position = position_nudge(y = 0.33),
                         inherit.aes = FALSE, shape = 23, size = 3.2,
                         fill = "black", color = "white", stroke = 0.6)
   }

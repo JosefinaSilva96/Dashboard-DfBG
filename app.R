@@ -707,49 +707,28 @@ server <- function(input, output, session) {
                    color = "#8C2D2D")
   )
 
-  # estado: lista de entradas por categoría
-  use_cases <- reactiveValues(
-    prod = list(
-      list(country = "Canada",    text = "Microsoft Copilot, GitHub Copilot, DeepL Pro \u00b7 Civil Service, Procurement"),
-      list(country = "Singapore", text = "SWEE (GenAI writing assistant) \u00b7 Taxation"),
-      list(country = "Guatemala", text = "ChatGPT, Gemini as personal productivity assistants \u00b7 Civil Service"),
-      list(country = "Hungary",   text = "MS Copilot pilot for office work \u00b7 Civil Service"),
-      list(country = "Austria",   text = "Open WebUI: knowledge management & drafting \u00b7 Health")
-    ),
-    citizen = list(
-      list(country = "Ukraine",   text = "Diia AI \u2014 world's first national AI assistant"),
-      list(country = "Argentina", text = "Chatbot MIA \u2014 national-scale citizen query assistant"),
-      list(country = "Panama",    text = "Virtual Assistant 3-1-1 \u2014 citizen service hotline"),
-      list(country = "Hungary",   text = "1818 MIA Chatbot \u2014 multichannel public services"),
-      list(country = "Burkina Faso", text = "LegiChat \u2014 citizen AI access to legislative corpus")
-    ),
-    health = list(
-      list(country = "Egypt",   text = "MASA \u2014 breast cancer detection via computer vision \u00b7 Health"),
-      list(country = "Jordan",  text = "ARK/Paxera \u2014 radiology imaging; CAD4TB \u2014 tuberculosis \u00b7 Health"),
-      list(country = "Jordan",  text = "e-ICU \u2014 AI-assisted patient deterioration prediction \u00b7 Health"),
-      list(country = "Hungary", text = "Brainomix (brain imaging), CRC (colorectal cancer detection) \u00b7 Health")
-    ),
-    tax = list(
-      list(country = "Singapore", text = "iNAT \u2014 taxpayer network analysis; VICA chatbot \u00b7 Taxation"),
-      list(country = "Malaysia",  text = "AI-powered income tax fraud detection \u00b7 Taxation"),
-      list(country = "Peru",      text = "AI agents for audits & appeals processing \u00b7 Taxation"),
-      list(country = "Nepal",     text = "Risk Engine, Report Engine, Tax chatbot \u00b7 Taxation"),
-      list(country = "Jordan",    text = "Smart declarations + income & sales tax AI assistant \u00b7 Taxation")
-    ),
-    edu = list(
-      list(country = "Jordan",    text = "Siraj \u2014 AI tutoring aligned to national curriculum \u00b7 Education"),
-      list(country = "Kosovo",    text = "MIA \u2014 AI-powered learning for students & teachers \u00b7 Education"),
-      list(country = "Lao PDR",   text = "Eduten \u2014 adaptive mathematics learning platform \u00b7 Education"),
-      list(country = "Uruguay",   text = "Ceibal \u2014 virtual tutoring system \u00b7 Education")
-    ),
-    infra = list(
-      list(country = "Nigeria",   text = "N-ATLAS \u2014 multilingual LLM: Yoruba, Igbo, Hausa, Pidgin"),
-      list(country = "Cambodia",  text = "TranslateKH (Khmer\u2194EN translation); Sarika (Khmer TTS)"),
-      list(country = "Bhutan",    text = "Dzongkha NLP + machine translation for service portals"),
-      list(country = "Brazil",    text = "Open-source LLMs on sovereign infrastructure; fine-tuning"),
-      list(country = "Singapore", text = "AIBots (internal GenAI platform); Transcribe (speech-to-text)")
-    )
-  )
+  # estado: lista de entradas por categoría, cargada desde data/ai_use_cases.csv
+  # (respuestas REALES de las preguntas "Key AI applications" de Agency,
+  # Managers y Systems, clasificadas en las 6 categorias). Si ese archivo no
+  # existe todavia, cae a una lista vacia por categoria (no rompe la app).
+  load_use_cases <- function(path = "data/ai_use_cases.csv") {
+    empty <- setNames(rep(list(list()), length(UC_CATS)), names(UC_CATS))
+    if (!file.exists(path)) return(empty)
+    tbl <- tryCatch(utils::read.csv(path, stringsAsFactors = FALSE, encoding = "UTF-8"),
+                    error = function(e) NULL)
+    if (is.null(tbl) || !all(c("country", "category", "text") %in% names(tbl))) return(empty)
+    out <- empty
+    for (cc in names(UC_CATS)) {
+      sub <- tbl[tbl$category == cc, ]
+      if (nrow(sub) == 0) next
+      out[[cc]] <- lapply(seq_len(nrow(sub)), function(i) {
+        list(country = sub$country[i], text = sub$text[i])
+      })
+    }
+    out
+  }
+
+  use_cases <- do.call(reactiveValues, load_use_cases())
 
 
   # Descargar el cuadro como PNG (envia mensaje al cliente, que rasteriza el DOM)
