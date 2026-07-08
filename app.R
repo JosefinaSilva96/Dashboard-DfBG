@@ -238,7 +238,9 @@ ui <- page_sidebar(
         conditionalPanel(
           condition = "input.country != '' && typeof input.family !== 'undefined'",
           downloadButton("dl_brief", "Download economy brief (.docx)",
-                         class = "btn-primary w-100")
+                         class = "btn-primary w-100"),
+          div(class = "small text-muted mt-1",
+              "The narrative sections of this brief are AI-generated from survey data and have not been reviewed by World Bank staff.")
         ),
         conditionalPanel(
           condition = "input.country == '' || typeof input.family === 'undefined'",
