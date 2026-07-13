@@ -126,7 +126,7 @@ plot_single <- function(data, q, country_name, scope = "compare", base = "agency
     labs(title = q$title,
          subtitle = paste0("Bars: ", ig_lbl, " average  \u25c7  Diamond + solid bar: ",
                            country_name, "'s response"),
-         x = "Share of countries (weighted)", y = NULL, caption = CAP_TXT) +
+         x = "Share of countries", y = NULL, caption = CAP_TXT) +
     theme_dfbg()
   p
 }
