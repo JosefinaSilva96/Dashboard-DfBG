@@ -1,25 +1,25 @@
 # =============================================================================
 # app.R — DfBG Country Dashboard
 # -----------------------------------------------------------------------------
-# Dashboard Shiny para el AI & Data for Better Governance Survey (World Bank).
+# Shiny dashboard for the AI & Data for Better Governance Survey (World Bank).
 #
-# Permite:
-#   1. Elegir un país.
-#   2. Ver, pregunta por pregunta, los gráficos de la sección Agency, con vista
-#      conmutable entre "solo el país" y "país vs. promedio de su income group".
-#   3. Descargar el Country Brief automatizado en Word (.docx), replicando el
-#      formato del brief de Austria.
+# Lets you:
+#   1. Pick a country.
+#   2. View, question by question, the Agency section charts, with a toggle
+#      between "country only" and "country vs. income-group average".
+#   3. Download the automated Country Brief in Word (.docx), replicating the
+#      Austria brief format.
 #
-# CÓMO CORRER (local):
-#   1. Colocá en data/ los archivos que produce build_dfbg_database_EN.R:
+# HOW TO RUN (local):
+#   1. Put the files produced by build_dfbg_database_EN.R into data/:
 #        dfbg_agency.rds, dfbg_managers.rds, dfbg_systems.rds
-#      (también sirven los .csv equivalentes)
-#      y, opcionalmente, CLASS_2025_10_07.xlsx para los income groups.
-#   2. Abrí este proyecto en RStudio y ejecutá:  shiny::runApp()
+#      (equivalent .csv files also work)
+#      and, optionally, CLASS_2025_10_07.xlsx for the income groups.
+#   2. Open this project in RStudio and run:  shiny::runApp()
 #
-# DESPLIEGUE (shinyapps.io / Posit Connect):
-#   rsconnect::deployApp() con la carpeta del proyecto. Los .rds deben ir
-#   incluidos en data/ (no rutas absolutas de OneDrive).
+# DEPLOYMENT (shinyapps.io / Posit Connect):
+#   rsconnect::deployApp() with the project folder. The .rds files must be
+#   included in data/ (no absolute OneDrive paths).
 # =============================================================================
 
 library(shiny)
@@ -34,7 +34,7 @@ library(tibble)
 library(officer)
 library(flextable)
 
-# --- carga de módulos --------------------------------------------------------
+# --- module loading ----------------------------------------------------------
 source("R/question_dictionary.R", local = TRUE)
 source("R/manager_questions.R",  local = TRUE)
 source("R/systems_questions.R",  local = TRUE)
@@ -46,16 +46,21 @@ source("R/global_stats.R",        local = TRUE)
 source("R/llm_narrative.R",       local = TRUE)
 source("R/build_brief.R",         local = TRUE)
 
-# --- datos (se cargan una vez al iniciar) ------------------------------------
+# --- data (loaded once at startup) -------------------------------------------
 DATA <- tryCatch(load_dfbg(), error = function(e) {
-  warning("No se pudieron cargar los datos: ", conditionMessage(e))
+  warning("Could not load the data: ", conditionMessage(e))
   NULL
 })
 
-# preguntas realmente disponibles en la base actual
+# questions actually available in the current database
 QLIST <- if (!is.null(DATA)) available_questions(DATA$agency) else AGENCY_QUESTIONS
 
-# tema visual estilo World Bank
+# Feature flag: economy brief download disabled per a specific request
+# ("for now"). To re-enable it, set this to TRUE - nothing else needs to
+# change, the button and downloadHandler are already fully wired up.
+BRIEF_DOWNLOAD_ENABLED <- FALSE
+
+# World-Bank-style visual theme
 wb_theme <- bs_theme(
   version = 5,
   bg = "#FFFFFF", fg = "#002245",
@@ -65,10 +70,10 @@ wb_theme <- bs_theme(
 )
 
 # =============================================================================
-# Mapeo país -> región (clasificación de 7 regiones del World Bank), usado
-# para el filtro por región de la pestaña "AI Use Cases". Cubre nombres
-# comunes y algunas variantes oficiales; si un país no está en el mapa, cae
-# en "Other / Not classified" (no rompe nada, solo no se filtra bien).
+# Country -> region mapping (World Bank's 7-region classification), used for
+# the region filter on the "AI Use Cases" tab. Covers common names and some
+# official variants; if a country isn't in the map, it falls back to
+# "Other / Not classified" (nothing breaks, it just won't filter well).
 # =============================================================================
 
 UC_REGIONS <- c("East Asia & Pacific", "Europe & Central Asia",
@@ -176,9 +181,9 @@ REGION_MAP <- c(
   "Uganda"="Sub-Saharan Africa","Zambia"="Sub-Saharan Africa","Zimbabwe"="Sub-Saharan Africa"
 )
 
-# Devuelve la región de un país; "Other / Not classified" si no está en el mapa
-# (por ejemplo si el nombre exacto en tus datos difiere de las variantes de
-# arriba — avisame y lo agrego).
+# Returns a country's region; "Other / Not classified" if it's not in the map
+# (e.g. if the exact name in your data differs from the variants above —
+# let me know and I'll add it).
 country_region <- function(cty) {
   r <- unname(REGION_MAP[cty])
   ifelse(is.na(r), "Other / Not classified", r)
@@ -192,14 +197,14 @@ ui <- page_sidebar(
   title = "AI & Data for Better Governance — Economies Dashboard",
   theme = wb_theme,
 
-  # Librería para exportar el cuadro de Use Cases como PNG (rasteriza el DOM).
-  # OJO: se sirve DESDE la carpeta www/ del proyecto (no desde un CDN externo)
-  # porque en redes internas/corporativas (ej. dominios *-int.worldbank.org)
-  # suelen bloquearse los CDN externos (cdnjs, unpkg, etc.), lo que hacía que
-  # html2canvas nunca cargara y el botón "Download as PNG" tirara el error
-  # "Could not capture the image". Shiny sirve automáticamente cualquier
-  # archivo dentro de www/ en la raíz de la app, así que esto funciona igual
-  # con o sin acceso a internet.
+  # Library used to export the Use Cases grid as a PNG (rasterizes the DOM).
+  # NOTE: served FROM the project's www/ folder (not from an external CDN)
+  # because internal/corporate networks (e.g. *-int.worldbank.org domains)
+  # often block external CDNs (cdnjs, unpkg, etc.), which meant html2canvas
+  # never loaded and the "Download as PNG" button threw the error
+  # "Could not capture the image". Shiny automatically serves any file
+  # inside www/ at the app's root, so this works with or without internet
+  # access.
   tags$head(
     tags$script(src = "html2canvas.min.js"),
     tags$script(HTML(
@@ -235,18 +240,28 @@ ui <- page_sidebar(
                                 sort(country_choices(DATA)$country)),
                     selected = sort(country_choices(DATA)$country)[1]),
         uiOutput("ig_badge"),
-        conditionalPanel(
-          condition = "input.country != '' && typeof input.family !== 'undefined'",
-          downloadButton("dl_brief", "Download economy brief (.docx)",
-                         class = "btn-primary w-100"),
-          div(class = "small text-muted mt-1",
-              "The narrative sections of this brief are AI-generated from survey data and have not been reviewed by World Bank staff.")
-        ),
-        conditionalPanel(
-          condition = "input.country == '' || typeof input.family === 'undefined'",
-          div(class = "small text-muted",
-              "Select an economy and a questionnaire to enable the download.")
-        ),
+        if (BRIEF_DOWNLOAD_ENABLED) {
+          tagList(
+            conditionalPanel(
+              condition = "input.country != '' && typeof input.family !== 'undefined'",
+              downloadButton("dl_brief", "Download economy brief (.docx)",
+                             class = "btn-primary w-100"),
+              div(class = "small text-muted mt-1",
+                  "The narrative sections of this brief are AI-generated from survey data and have not been reviewed by World Bank staff.")
+            ),
+            conditionalPanel(
+              condition = "input.country == '' || typeof input.family === 'undefined'",
+              div(class = "small text-muted",
+                  "Select an economy and a questionnaire to enable the download.")
+            )
+          )
+        } else {
+          tagList(
+            tags$button("Download economy brief (.docx)", class = "btn btn-primary w-100",
+                       disabled = "disabled"),
+            div(class = "small text-muted mt-1", tags$em("Coming soon"))
+          )
+        },
         uiOutput("api_status"),
         hr(),
         radioButtons("family", "Questionnaire",
@@ -354,7 +369,8 @@ ui <- page_sidebar(
                   "World Bank region, and download the summary as an image."),
           tags$li("The ", tags$strong("Download economy brief"),
                   " button in the sidebar generates an automated Word brief ",
-                  "for the selected economy.")
+                  "for the selected economy. ",
+                  tags$em("(Coming soon \u2014 temporarily disabled.)"))
         )
       ))
     ),
@@ -372,7 +388,7 @@ ui <- page_sidebar(
       div(
         style = "padding:8px 12px;",
 
-        # === Filtro por región + descarga (afecta lo que se muestra) ===
+        # === Region filter + download (affects what's displayed) ===
         div(
           style = "display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:14px;",
           div(style = "display:flex; align-items:center; gap:10px;",
@@ -389,7 +405,7 @@ ui <- page_sidebar(
           )
         ),
 
-        # === Capturable: titulo + grid (esto es lo que se descarga como PNG) ===
+        # === Capturable: title + grid (this is what gets downloaded as PNG) ===
         div(
           id = "uc_capture",
           style = "background:#fff; padding:16px; border-radius:8px;",
@@ -464,18 +480,18 @@ server <- function(input, output, session) {
                                           paste0(" \u00b7 ", input$sector) else ""))
   })
 
-  # --- Reactivos de familia / sector / preguntas ---------------------------
+  # --- Family / sector / question reactives ---------------------------
 
-  # Diccionario de preguntas disponible para la familia elegida
+  # Question dictionary available for the chosen family
   qlist_fam <- reactive({
     req(input$family)
     questions_for_family(req_data(), input$family)
   })
 
-  # Base de datos (nombre del slot) para la familia
+  # Database (slot name) for the family
   base_fam <- reactive({ req(input$family); FAMILY_BASE[[input$family]] })
 
-  # Sectores disponibles para Managers/Systems (Agency no tiene sectores)
+  # Sectors available for Managers/Systems (Agency has no sectors)
   sectors_fam <- reactive({
     req(input$family)
     if (input$family == "Agency") return(NULL)
@@ -485,7 +501,7 @@ server <- function(input, output, session) {
     sort(unique(stringr::str_remove(df$questionnaire, "^(Systems|Manager)_")))
   })
 
-  # Selector de sector (solo Managers/Systems)
+  # Sector picker (Managers/Systems only)
   output$sector_picker <- renderUI({
     if (is.null(input$family) || input$family == "Agency") return(NULL)
     if (is.null(input$scope) || input$scope != "country") return(NULL)
@@ -496,7 +512,7 @@ server <- function(input, output, session) {
     selectInput("sector", "Sector", choices = secs, selected = secs[1])
   })
 
-  # Selector de scope: label cambia segun la familia
+  # Scope picker: label changes depending on the family
   output$scope_picker <- renderUI({
     if (is.null(input$family)) return(NULL)
     if (input$family == "Agency") {
@@ -512,11 +528,11 @@ server <- function(input, output, session) {
     }
   })
 
-  # Todos los modulos disponibles para la familia elegida, en el orden real
-  # del cuestionario, cada uno con sus qids ya filtrados a lo que existe en
-  # la base. Ya no se elige un modulo: se muestran TODOS, uno debajo del
-  # otro, con su propio encabezado de seccion (el usuario simplemente
-  # scrollea).
+  # All modules available for the chosen family, in the real questionnaire
+  # order, each with its qids already filtered down to what exists in the
+  # database. A module is no longer picked one at a time: ALL of them are
+  # shown, one after another, each with its own section header (the user
+  # just scrolls).
   family_modules <- reactive({
     req(input$family)
     ql   <- qlist_fam()
@@ -525,21 +541,23 @@ server <- function(input, output, session) {
     Filter(function(m) length(m$qids) > 0, mods)
   })
 
-  # Data efectiva para graficar:
-  #  - Agency: la base completa (compara contra income group).
-  #  - Managers/Systems en modo 'compare' (entre sectores): TODAS las filas
-  #    del país (sin filtrar sector) → make_plot delega a plot_*_sectors.
-  #  - Managers/Systems en modo 'country' (un sector solo): filtra al sector
-  #    elegido y lo expone como base 'agency'-like para vista detallada.
+  # Effective data used for charting:
+  #  - Agency: the full database (compares against the income group).
+  #  - Managers/Systems in 'compare' mode (across sectors): ALL of the
+  #    country's rows (sector not filtered) → make_plot delegates to
+  #    plot_*_sectors.
+  #  - Managers/Systems in 'country' mode (a single sector): filters down
+  #    to the chosen sector and exposes it as an 'agency'-like base for the
+  #    detailed view.
   plot_data <- reactive({
     req(input$country)
     d <- req_data(); b <- base_fam()
     if (input$family == "Agency") return(d)
 
-    # comparar entre sectores: no filtrar
+    # comparing across sectors: don't filter
     if (input$scope == "compare") return(d)
 
-    # vista de un solo sector: filtrar
+    # single-sector view: filter
     sec <- input$sector
     if (is.null(sec)) return(d)
     sub <- dplyr::filter(d[[b]],
@@ -549,15 +567,15 @@ server <- function(input, output, session) {
     d2
   })
 
-  # Todos los ids de pregunta, en orden, de TODOS los modulos concatenados
-  # (usado para indexar los outputs dinamicos mod_plot_1, mod_plot_2, ...).
+  # All question ids, in order, across ALL modules concatenated (used to
+  # index the dynamic outputs mod_plot_1, mod_plot_2, ...).
   all_qids <- reactive({
     unlist(lapply(family_modules(), function(m) m$qids))
   })
 
-  # Panel principal: todos los modulos del cuestionario, cada uno con su
-  # encabezado de seccion y TODOS sus graficos, uno debajo del otro. El
-  # usuario scrollea en vez de elegir un modulo puntual.
+  # Main panel: every module of the questionnaire, each with its own section
+  # header and ALL of its charts, one after another. The user scrolls
+  # instead of picking a specific module.
   output$module_charts_ui <- renderUI({
     if (is.null(input$country) || !nzchar(input$country) || is.null(input$family)) {
       return(div(class = "text-muted p-4",
@@ -589,10 +607,10 @@ server <- function(input, output, session) {
     }))
   })
 
-  # Genera dinamicamente los outputs (titulo/cuerpo/pie/plot/descarga) para
-  # CADA pregunta de TODOS los modulos (indice corrido). Patron estandar de
-  # Shiny para un numero variable de outputs: se recrean cada vez que
-  # cambia la familia/pais/etc.
+  # Dynamically generates the outputs (title/body/footer/plot/download) for
+  # EACH question across ALL modules (running index). Standard Shiny pattern
+  # for a variable number of outputs: they get recreated whenever the
+  # family/country/etc. changes.
   MAX_MODULE_SLOTS <- 40
   observe({
     qids <- all_qids()
@@ -619,10 +637,11 @@ server <- function(input, output, session) {
                         !is.null(input$scope) && input$scope == "compare"
         show_table <- q$type == "single" && use_sectoral
 
-        # Objeto ggplot: se calcula UNA vez y se reutiliza para mostrarlo,
-        # calcular el alto dinamico (segun cuantas categorias tenga) y
-        # exportarlo a PNG — asi no se recalcula 3 veces ni queda un alto
-        # fijo que aplaste las etiquetas cuando hay muchas categorias.
+        # ggplot object: computed ONCE and reused to display it, to compute
+        # the dynamic height (based on how many categories it has), and to
+        # export it as PNG — this way it isn't recalculated 3 times, and
+        # there's no fixed height squashing the labels when there are many
+        # categories.
         plot_obj <- reactive({
           if (q$type == "text" || show_table) return(NULL)
           make_plot(plot_data(), q, input$country, scope = input$scope, base = base_fam())
@@ -689,7 +708,7 @@ server <- function(input, output, session) {
     }
   })
 
-  # Descarga del brief
+  # Brief download
   output$dl_brief <- downloadHandler(
     filename = function() {
       paste0("dfbg_", tolower(gsub("[^A-Za-z]+", "_", input$country)), "_brief.docx")
@@ -707,7 +726,7 @@ server <- function(input, output, session) {
   )
 
   # ===========================================================================
-  # AI USE CASES — cuadro editable de seis categorías
+  # AI USE CASES — editable grid with six categories
   # ===========================================================================
 
   UC_CATS <- list(
@@ -731,10 +750,11 @@ server <- function(input, output, session) {
                    color = "#8C2D2D")
   )
 
-  # estado: lista de entradas por categoría, cargada desde data/ai_use_cases.csv
-  # (respuestas REALES de las preguntas "Key AI applications" de Agency,
-  # Managers y Systems, clasificadas en las 6 categorias). Si ese archivo no
-  # existe todavia, cae a una lista vacia por categoria (no rompe la app).
+  # state: list of entries per category, loaded from data/ai_use_cases.csv
+  # (REAL responses to the "Key AI applications" questions from Agency,
+  # Managers, and Systems, classified into the 6 categories). If that file
+  # doesn't exist yet, it falls back to an empty list per category (doesn't
+  # break the app).
   load_use_cases <- function(path = "data/ai_use_cases.csv") {
     empty <- setNames(rep(list(list()), length(UC_CATS)), names(UC_CATS))
     if (!file.exists(path)) return(empty)
@@ -755,15 +775,15 @@ server <- function(input, output, session) {
   use_cases <- do.call(reactiveValues, load_use_cases())
 
 
-  # Descargar el cuadro como PNG (envia mensaje al cliente, que rasteriza el DOM)
+  # Download the grid as PNG (sends a message to the client, which rasterizes the DOM)
   observeEvent(input$uc_download, {
     session$sendCustomMessage("uc_download_png",
                               list(filename = "dfbg_ai_use_cases.png"))
   })
 
-  # Delete: cada botoncito en el grid llama a Shiny.setInputValue('uc_delete', ...)
-  # con priority:'event' para que siempre dispare, incluso si el payload se repite.
-  # Asi NO necesitamos registrar N observers (uno por entrada).
+  # Delete: each little button in the grid calls Shiny.setInputValue('uc_delete', ...)
+  # with priority:'event' so it always fires, even if the payload repeats.
+  # This way we do NOT need to register N observers (one per entry).
   observeEvent(input$uc_delete, {
     info <- input$uc_delete
     if (is.null(info) || is.null(info$cat) || is.null(info$idx)) return()
@@ -773,7 +793,7 @@ server <- function(input, output, session) {
     use_cases[[cc]] <- cur[-ii]
   })
 
-  # Render del grid 3x2 con las seis categorías
+  # Render the 3x2 grid with the six categories
   output$uc_region_label <- renderUI({
     rf <- input$uc_region %||% "All regions"
     note <- "\u00b7 Showing one example per economy per category"
@@ -784,9 +804,9 @@ server <- function(input, output, session) {
               paste0("\u00b7 Region: ", rf, "  ", note))
   })
 
-  # Recorta el texto de cada caso a maximo 2 oraciones (con un limite de
-  # caracteres de respaldo por si viene una sola oracion larguisima sin punto),
-  # para que las tarjetas no se hagan enormes, sobre todo en "All regions".
+  # Truncates each case's text to a maximum of 2 sentences (with a
+  # character-count backstop in case a single sentence runs on forever
+  # without a period), so cards don't get huge, especially in "All regions".
   truncate_uc_text <- function(t, max_sentences = 2, max_chars = 200) {
     t <- trimws(t)
     parts <- unlist(stringr::str_split(t, "(?<=[.!?])\\s+"))
@@ -811,9 +831,9 @@ server <- function(input, output, session) {
       meta  <- UC_CATS[[cc]]
       items <- use_cases[[cc]]
 
-      # Indices que pasan el filtro de region (se preserva el indice ORIGINAL
-      # dentro de `items`, asi el boton de borrar sigue apuntando a la
-      # entrada correcta aunque la vista este filtrada por region).
+      # Indices that pass the region filter (the ORIGINAL index within
+      # `items` is preserved, so the delete button keeps pointing to the
+      # right entry even when the view is filtered by region).
       keep_idx <- if (is.null(items) || length(items) == 0) {
         integer(0)
       } else {
@@ -822,10 +842,9 @@ server <- function(input, output, session) {
             identical(country_region(items[[i]]$country), region_filter)
         }, seq_along(items))
         if (length(idx) > 0) {
-          # Un mismo pais puede tener varias entradas en una misma categoria
-          # (una por sector/cuestionario) -> mostramos solo UNA por pais,
-          # siempre (con region elegida o no), para que la tarjeta no se
-          # haga enorme.
+          # A single country can have several entries in the same category
+          # (one per sector/questionnaire) -> we show only ONE per country,
+          # always (region chosen or not), so the card doesn't get huge.
           seen <- character(0)
           idx <- Filter(function(i) {
             cty <- items[[i]]$country
@@ -837,10 +856,10 @@ server <- function(input, output, session) {
         idx
       }
 
-      # Limite de items por tarjeta: algunas categorias (ej. Tax) tienen
-      # muchas mas economias que otras (ej. Infra), y eso desbalanceaba
-      # mucho la imagen exportada (columnas larguisimas vs. cortas). Con un
-      # tope parejo, todas las tarjetas quedan de un tamaño mas comparable.
+      # Cap on items per card: some categories (e.g. Tax) have far more
+      # economies than others (e.g. Infra), which made the exported image
+      # very unbalanced (very long columns vs. short ones). With an even
+      # cap, all cards end up a more comparable size.
       MAX_ITEMS_PER_CARD <- 12
       n_total_matches <- length(keep_idx)
       n_extra <- max(0, n_total_matches - MAX_ITEMS_PER_CARD)
