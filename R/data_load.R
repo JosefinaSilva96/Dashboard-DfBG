@@ -53,9 +53,9 @@ load_dfbg <- function(path = DATA_PATH) {
     stop("Could not find ", stub, ".rds or ", stub, ".csv in ", path)
   }
 
-  agency  <- read_one("dfbg_agency")
-  manager <- read_one("dfbg_managers")
-  systems <- read_one("dfbg_systems")
+  agency  <- read_one("dfbg_agency_public")
+  manager <- read_one("dfbg_managers_public")
+  systems <- read_one("dfbg_systems_public")
 
   # Normaliza nombres de columnas a minúsculas para empatar el diccionario
   agency  <- janitor::clean_names(agency)
