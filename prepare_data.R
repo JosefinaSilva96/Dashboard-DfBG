@@ -15,7 +15,7 @@ setwd("C:/WBG/GitHub/Dashboard-DfBG")
 dest <- file.path(getwd(), "data")
 dir.create(dest, showWarnings = FALSE, recursive = TRUE)
 
-files <- c("dfbg_agency.rds", "dfbg_managers.rds", "dfbg_systems.rds")
+files <- c("dfbg_agency_public.rds", "dfbg_managers_public.rds", "dfbg_systems_public.rds")
 
 for (f in files) {
   src <- file.path(CLEAN_DIR, f)
