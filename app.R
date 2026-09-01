@@ -768,7 +768,7 @@ server <- function(input, output, session) {
           } else {
             tagList(
               div(class = "text-muted",
-                  paste0("No country brief found for \"", cty, "\".")),
+                  paste0("No brief available for ", cty, ".")),
               div(class = "small text-muted mt-2",
                   paste0("Looking in: ",
                          normalizePath(COUNTRY_BRIEFS_DIR, mustWork = FALSE),
@@ -800,7 +800,7 @@ server <- function(input, output, session) {
             if (!nzchar(cty))
               "Select an economy to enable the download."
             else
-              paste0("No brief available yet for ", cty, "."))
+              paste0("No brief available for ", cty, "."))
       )
     } else {
       downloadButton("dl_country_brief_pdf", "Download country brief (.pdf)",
