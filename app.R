@@ -190,6 +190,26 @@ country_region <- function(cty) {
 }
 
 # =============================================================================
+# Country brief PDFs (pre-made, kept in the "Country reports" project folder)
+# -----------------------------------------------------------------------------
+# One PDF per economy, named exactly like the economy (e.g. "Chile.pdf").
+# addResourcePath() exposes that folder at /country_briefs/... so a file can
+# be shown in an <iframe> and offered as a direct download without copying
+# anything into www/.
+# =============================================================================
+COUNTRY_BRIEFS_DIR <- "Country reports"
+if (dir.exists(COUNTRY_BRIEFS_DIR)) {
+  addResourcePath("country_briefs", COUNTRY_BRIEFS_DIR)
+}
+
+# Path to the brief for a given economy, or NA if there isn't one yet.
+country_brief_file <- function(country) {
+  if (is.null(country) || !nzchar(country)) return(NA_character_)
+  f <- file.path(COUNTRY_BRIEFS_DIR, paste0(country, ".pdf"))
+  if (file.exists(f)) f else NA_character_
+}
+
+# =============================================================================
 # UI
 # =============================================================================
 
@@ -378,6 +398,12 @@ ui <- page_sidebar(
       "Explore charts",
       uiOutput("header_cards"),
       uiOutput("module_charts_ui")
+    ),
+    nav_panel(
+      "Country Brief",
+      card(card_body(
+        uiOutput("country_brief_ui")
+      ))
     ),
     nav_panel(
       "Text responses",
@@ -723,6 +749,44 @@ server <- function(input, output, session) {
         incProgress(0.7)
       })
     }
+  )
+
+  # ===========================================================================
+  # COUNTRY BRIEF — pre-made PDF from the "Country reports" folder
+  # ===========================================================================
+
+  output$country_brief_ui <- renderUI({
+    cty <- input$country %||% ""
+    f <- country_brief_file(cty)
+    if (is.na(f)) {
+      return(div(
+        class = "text-muted",
+        if (!nzchar(cty))
+          "Select an economy in the sidebar to see its country brief."
+        else
+          paste0("No country brief available yet for ", cty, ".")
+      ))
+    }
+    tagList(
+      downloadButton("dl_country_brief_pdf", "Download brief (.pdf)",
+                     class = "btn-primary mb-3"),
+      tags$iframe(
+        src = paste0("country_briefs/", utils::URLencode(paste0(cty, ".pdf"))),
+        style = "width:100%; height:80vh; border:1px solid #ddd; border-radius:6px;"
+      )
+    )
+  })
+
+  output$dl_country_brief_pdf <- downloadHandler(
+    filename = function() {
+      paste0(tolower(gsub("[^A-Za-z]+", "_", input$country)), "_brief.pdf")
+    },
+    content = function(file) {
+      f <- country_brief_file(input$country)
+      req(!is.na(f))
+      file.copy(f, file, overwrite = TRUE)
+    },
+    contentType = "application/pdf"
   )
 
   # ===========================================================================
