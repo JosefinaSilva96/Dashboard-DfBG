@@ -192,21 +192,37 @@ country_region <- function(cty) {
 # =============================================================================
 # Country brief PDFs (pre-made, kept in the "Country reports" project folder)
 # -----------------------------------------------------------------------------
-# One PDF per economy, named exactly like the economy (e.g. "Chile.pdf").
-# addResourcePath() exposes that folder at /country_briefs/... so a file can
-# be shown in an <iframe> and offered as a direct download without copying
-# anything into www/.
+# Files are named like "Chile_brief.pdf", "Bosnia_and_Herzegovina_brief.pdf".
+# We match against the economy name loosely (case/underscore/punctuation
+# insensitive) since the exact spelling in the data (e.g. "Korea, Rep.") may
+# not match the file name one-for-one. addResourcePath() exposes the folder
+# at /country_briefs/... so a file can be shown in an <iframe> and offered as
+# a direct download without copying anything into www/.
 # =============================================================================
 COUNTRY_BRIEFS_DIR <- "Country reports"
 if (dir.exists(COUNTRY_BRIEFS_DIR)) {
   addResourcePath("country_briefs", COUNTRY_BRIEFS_DIR)
 }
 
-# Path to the brief for a given economy, or NA if there isn't one yet.
+# Strips "_brief.pdf", underscores/punctuation, and case, so
+# "Bosnia and Herzegovina" and "Bosnia_and_Herzegovina_brief.pdf" both
+# normalize to "bosniaandherzegovina".
+.normalize_brief_name <- function(x) {
+  x <- sub("_brief\\.pdf$", "", x, ignore.case = TRUE)
+  x <- gsub("[^A-Za-z0-9]+", "", x)
+  tolower(x)
+}
+
+# Full path to the brief PDF for a given economy, or NA if there isn't one.
 country_brief_file <- function(country) {
   if (is.null(country) || !nzchar(country)) return(NA_character_)
-  f <- file.path(COUNTRY_BRIEFS_DIR, paste0(country, ".pdf"))
-  if (file.exists(f)) f else NA_character_
+  if (!dir.exists(COUNTRY_BRIEFS_DIR)) return(NA_character_)
+  files <- list.files(COUNTRY_BRIEFS_DIR, pattern = "_brief\\.pdf$",
+                      full.names = FALSE, ignore.case = TRUE)
+  if (length(files) == 0) return(NA_character_)
+  hit <- files[.normalize_brief_name(files) == .normalize_brief_name(country)]
+  if (length(hit) == 0) return(NA_character_)
+  file.path(COUNTRY_BRIEFS_DIR, hit[1])
 }
 
 # =============================================================================
@@ -771,7 +787,7 @@ server <- function(input, output, session) {
       downloadButton("dl_country_brief_pdf", "Download brief (.pdf)",
                      class = "btn-primary mb-3"),
       tags$iframe(
-        src = paste0("country_briefs/", utils::URLencode(paste0(cty, ".pdf"))),
+        src = paste0("country_briefs/", utils::URLencode(basename(f))),
         style = "width:100%; height:80vh; border:1px solid #ddd; border-radius:6px;"
       )
     )
