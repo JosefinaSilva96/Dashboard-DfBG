@@ -768,11 +768,7 @@ server <- function(input, output, session) {
           } else {
             tagList(
               div(class = "text-muted",
-                  paste0("No brief available for ", cty, ".")),
-              div(class = "small text-muted mt-2",
-                  paste0("Looking in: ",
-                         normalizePath(COUNTRY_BRIEFS_DIR, mustWork = FALSE),
-                         " (", length(avail), " brief PDFs found there)"))
+                  paste0("No brief available for ", cty, "."))
             )
           }
         ))
