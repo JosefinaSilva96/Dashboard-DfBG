@@ -276,28 +276,7 @@ ui <- page_sidebar(
                                 sort(country_choices(DATA)$country)),
                     selected = sort(country_choices(DATA)$country)[1]),
         uiOutput("ig_badge"),
-        if (BRIEF_DOWNLOAD_ENABLED) {
-          tagList(
-            conditionalPanel(
-              condition = "input.country != '' && typeof input.family !== 'undefined'",
-              downloadButton("dl_brief", "Download economy brief (.docx)",
-                             class = "btn-primary w-100"),
-              div(class = "small text-muted mt-1",
-                  "The narrative sections of this brief are AI-generated from survey data and have not been reviewed by World Bank staff.")
-            ),
-            conditionalPanel(
-              condition = "input.country == '' || typeof input.family === 'undefined'",
-              div(class = "small text-muted",
-                  "Select an economy and a questionnaire to enable the download.")
-            )
-          )
-        } else {
-          tagList(
-            tags$button("Download economy brief (.docx)", class = "btn btn-primary w-100",
-                       disabled = "disabled"),
-            div(class = "small text-muted mt-1", tags$em("Coming soon"))
-          )
-        },
+        uiOutput("country_brief_sidebar_btn"),
         uiOutput("api_status"),
         hr(),
         radioButtons("family", "Questionnaire",
@@ -319,8 +298,8 @@ ui <- page_sidebar(
         p("This dashboard lets you explore the results of the AI and Data for ",
           "Better Governance Survey economy by economy, compare an economy ",
           "against the average of its World Bank income group, browse ",
-          "curated examples of AI use cases by region, and generate an ",
-          "automated economy brief summarizing the survey results."),
+          "curated examples of AI use cases by region, and download a ",
+          "country brief summarizing the survey results."),
         p(tags$em(
           "The survey responses shown throughout this dashboard reflect the ",
           "views and self-reported information of the participating ",
@@ -375,7 +354,7 @@ ui <- page_sidebar(
       card(card_body(
         h4("What this dashboard does"),
         p("Pick an economy to explore its questionnaire responses ",
-          "and download an automated economy brief in Word. In ",
+          "and download its country brief as a PDF. In ",
           tags$strong("Explore charts"), ", scroll down to see all the ",
           "questionnaire's charts, grouped by module."),
         tags$ul(
@@ -403,10 +382,11 @@ ui <- page_sidebar(
                   " tab shows curated examples of AI applications by ",
                   "category. Use the region filter to narrow down to one ",
                   "World Bank region, and download the summary as an image."),
-          tags$li("The ", tags$strong("Download economy brief"),
-                  " button in the sidebar generates an automated Word brief ",
-                  "for the selected economy. ",
-                  tags$em("(Coming soon \u2014 temporarily disabled.)"))
+          tags$li("The ", tags$strong("Download country brief (.pdf)"),
+                  " button in the sidebar downloads the pre-made PDF brief ",
+                  "for the selected economy \u2014 the same one shown in the ",
+                  tags$strong("Country Brief"), " tab. It's disabled when no ",
+                  "brief has been prepared yet for that economy.")
         )
       ))
     ),
@@ -773,33 +753,69 @@ server <- function(input, output, session) {
 
   output$country_brief_ui <- renderUI({
     cty <- input$country %||% ""
-    f <- country_brief_file(cty)
-    if (is.na(f)) {
-      return(div(
-        class = "text-muted",
-        if (!nzchar(cty))
-          "Select an economy in the sidebar to see its country brief."
-        else
-          paste0("No country brief available yet for ", cty, ".")
-      ))
-    }
-    tagList(
-      downloadButton("dl_country_brief_pdf", "Download brief (.pdf)",
-                     class = "btn-primary mb-3"),
+    tryCatch({
+      f <- country_brief_file(cty)
+      if (is.na(f)) {
+        avail <- if (dir.exists(COUNTRY_BRIEFS_DIR)) {
+          list.files(COUNTRY_BRIEFS_DIR, pattern = "_brief\\.pdf$", ignore.case = TRUE)
+        } else {
+          character(0)
+        }
+        return(div(
+          if (!nzchar(cty)) {
+            div(class = "text-muted",
+                "Select an economy in the sidebar to see its country brief.")
+          } else {
+            tagList(
+              div(class = "text-muted",
+                  paste0("No country brief found for \"", cty, "\".")),
+              div(class = "small text-muted mt-2",
+                  paste0("Looking in: ",
+                         normalizePath(COUNTRY_BRIEFS_DIR, mustWork = FALSE),
+                         " (", length(avail), " brief PDFs found there)"))
+            )
+          }
+        ))
+      }
       tags$iframe(
         src = paste0("country_briefs/", utils::URLencode(basename(f))),
         style = "width:100%; height:80vh; border:1px solid #ddd; border-radius:6px;"
       )
-    )
+    }, error = function(e) {
+      div(class = "text-danger",
+          paste0("Error loading the country brief: ", conditionMessage(e)))
+    })
+  })
+
+  # Sidebar button: enabled + points at the PDF when one exists for the
+  # selected economy; disabled with a short note otherwise.
+  output$country_brief_sidebar_btn <- renderUI({
+    cty <- input$country %||% ""
+    f <- country_brief_file(cty)
+    if (is.na(f)) {
+      tagList(
+        tags$button("Download country brief (.pdf)",
+                    class = "btn btn-primary w-100", disabled = "disabled"),
+        div(class = "small text-muted mt-1",
+            if (!nzchar(cty))
+              "Select an economy to enable the download."
+            else
+              paste0("No brief available yet for ", cty, "."))
+      )
+    } else {
+      downloadButton("dl_country_brief_pdf", "Download country brief (.pdf)",
+                     class = "btn-primary w-100")
+    }
   })
 
   output$dl_country_brief_pdf <- downloadHandler(
     filename = function() {
-      paste0(tolower(gsub("[^A-Za-z]+", "_", input$country)), "_brief.pdf")
+      f <- country_brief_file(input$country)
+      if (!is.na(f)) basename(f) else "brief.pdf"
     },
     content = function(file) {
       f <- country_brief_file(input$country)
-      req(!is.na(f))
+      validate(need(!is.na(f), "No brief PDF found for this economy."))
       file.copy(f, file, overwrite = TRUE)
     },
     contentType = "application/pdf"
