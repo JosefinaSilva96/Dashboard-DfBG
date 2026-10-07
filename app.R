@@ -229,10 +229,23 @@ country_brief_file <- function(country) {
 # UI
 # =============================================================================
 
-ui <- page_sidebar(
-  title = "AI & Data for Better Governance — Economies Dashboard",
+ui <-<- page_sidebar(
+  title = div(
+    style = "display:flex; align-items:center; gap:24px; width:100%; flex-wrap:wrap;",
+    h1(class = "bslib-page-title navbar-brand mb-0",
+       "AI & Data for Better Governance \u2014 Economies Dashboard"),
+    div(
+      style = "display:flex; align-items:center; gap:20px; margin-left:auto;",
+      tags$img(src = "logos/WB-DEC-Impact-horizontal-RGB-high.png",
+               alt = "World Bank Development Economics - Impact",
+               style = "height:44px; width:auto;"),
+      tags$img(src = "logos/WBG-Institutions-Horizontal-CMYK-01.jpeg",
+               alt = "World Bank Group Governance",
+               style = "height:44px; width:auto;")
+    )
+  ),
+  window_title = "AI & Data for Better Governance \u2014 Economies Dashboard",
   theme = wb_theme,
-
   # Library used to export the Use Cases grid as a PNG (rasterizes the DOM).
   # NOTE: served FROM the project's www/ folder (not from an external CDN)
   # because internal/corporate networks (e.g. *-int.worldbank.org domains)
