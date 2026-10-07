@@ -232,6 +232,56 @@ country_brief_file <- function(country) {
 }
 
 # =============================================================================
+# "No response" note for check-mark charts
+# -----------------------------------------------------------------------------
+# In "Economy vs. income-group average" charts, the options the selected
+# economy chose are marked with a check (\u2713). If NONE of the options has a
+# check, the economy either skipped the question or answered "Not sure", so
+# we add a note to the chart caption (it also shows up in the PNG download).
+# =============================================================================
+
+# TRUE if the chart is a check-mark chart (its subtitle has "\u2713 = Economy")
+.is_check_chart <- function(p) {
+  sub <- tryCatch(p$labels$subtitle, error = function(e) NULL)
+  !is.null(sub) && any(grepl("\u2713", as.character(sub), fixed = TRUE))
+}
+
+# TRUE if at least one option in the chart carries a check mark. Looks both
+# at the plot data and at the final axis labels (in case the check is added
+# through a scale's `labels =` function instead of the data).
+.has_check_mark <- function(p) {
+  hit <- function(x) any(grepl("\u2713", as.character(x), fixed = TRUE))
+  dat <- tryCatch(p$data, error = function(e) NULL)
+  if (is.data.frame(dat)) {
+    for (col in dat) {
+      if ((is.character(col) || is.factor(col)) && hit(col)) return(TRUE)
+    }
+  }
+  b <- tryCatch(ggplot2::ggplot_build(p), error = function(e) NULL)
+  if (is.null(b)) return(TRUE)  # can't tell -> don't add a misleading note
+  pp <- b$layout$panel_params[[1]]
+  axis_labels <- c(
+    tryCatch(unlist(pp$x$get_labels()), error = function(e) NULL),
+    tryCatch(unlist(pp$y$get_labels()), error = function(e) NULL)
+  )
+  hit(axis_labels)
+}
+
+# Adds the note to the caption when the economy has no checked option.
+add_no_response_note <- function(p, country) {
+  if (!inherits(p, "ggplot") || is.null(country) || !nzchar(country)) return(p)
+  if (!.is_check_chart(p) || .has_check_mark(p)) return(p)
+  n_items  <- attr(p, "n_items")
+  old_cap  <- tryCatch(p$labels$caption, error = function(e) NULL)
+  note     <- paste0("Note: ", country, " did not answer this question ",
+                     "or answered \u201cNot sure\u201d.")
+  new_cap  <- if (is.null(old_cap) || !nzchar(old_cap)) note else paste0(note, "\n", old_cap)
+  p <- p + ggplot2::labs(caption = new_cap)
+  attr(p, "n_items") <- n_items   # keep the attribute used for chart height
+  p
+}
+
+# =============================================================================
 # UI
 # =============================================================================
 
@@ -691,7 +741,8 @@ server <- function(input, output, session) {
         # categories.
         plot_obj <- reactive({
           if (q$type == "text" || show_table) return(NULL)
-          make_plot(plot_data(), q, input$country, scope = input$scope, base = base_fam())
+          p <- make_plot(plot_data(), q, input$country, scope = input$scope, base = base_fam())
+          add_no_response_note(p, input$country)
         })
 
         output[[paste0("mod_body_", ii)]] <- renderUI({
