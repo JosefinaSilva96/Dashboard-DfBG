@@ -33,6 +33,8 @@ library(forcats)
 library(tibble)
 library(officer)
 library(flextable)
+library(ragg)
+options(shiny.useragg = TRUE) 
 
 # --- module loading ----------------------------------------------------------
 source("R/question_dictionary.R", local = TRUE)
@@ -204,6 +206,10 @@ if (dir.exists(COUNTRY_BRIEFS_DIR)) {
   addResourcePath("country_briefs", COUNTRY_BRIEFS_DIR)
 }
 
+if (dir.exists("logos")) {
+  addResourcePath("logos", "logos")
+}
+
 # Strips "_brief.pdf", underscores/punctuation, and case, so
 # "Bosnia and Herzegovina" and "Bosnia_and_Herzegovina_brief.pdf" both
 # normalize to "bosniaandherzegovina".
@@ -229,7 +235,7 @@ country_brief_file <- function(country) {
 # UI
 # =============================================================================
 
-ui <-<- page_sidebar(
+ui <- page_sidebar(
   title = div(
     style = "display:flex; align-items:center; gap:24px; width:100%; flex-wrap:wrap;",
     h1(class = "bslib-page-title navbar-brand mb-0",
