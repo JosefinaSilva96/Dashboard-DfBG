@@ -770,7 +770,7 @@ server <- function(input, output, session) {
 
         output[[paste0("mod_plot_", ii)]] <- renderPlot({
           plot_obj()
-        }, res = 96)
+        }, res = 72)
 
         output[[paste0("mod_dl_", ii)]] <- downloadHandler(
           filename = function() {
