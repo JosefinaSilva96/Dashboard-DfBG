@@ -719,7 +719,7 @@ server <- function(input, output, session) {
 
         output[[paste0("mod_plot_", ii)]] <- renderPlot({
           plot_obj()
-        })
+        }, res = 96)
 
         output[[paste0("mod_dl_", ii)]] <- downloadHandler(
           filename = function() {
@@ -732,7 +732,7 @@ server <- function(input, output, session) {
             if (is.null(n_items)) n_items <- length(q$levels %||% character(0))
             if (n_items == 0) n_items <- 6
             h_in <- max(4.2, min(11, 1.6 + n_items * 0.55))
-            ggplot2::ggsave(filename = file, plot = p, device = "png",
+            ggplot2::ggsave(filename = file, plot = p, device = ragg::agg_png,
                             width = 10, height = h_in, dpi = 200, bg = "white")
           }
         )
