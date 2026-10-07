@@ -758,7 +758,7 @@ server <- function(input, output, session) {
           n_items <- attr(gg, "n_items")
           if (is.null(n_items)) n_items <- length(q$levels %||% character(0))
           if (n_items == 0) n_items <- 6
-          px_height <- max(320, min(900, round(90 + n_items * 34)))
+          px_height <- max(320, min(1500, round(90 + n_items * 34)))
 
           tagList(
             plotOutput(paste0("mod_plot_", ii), height = paste0(px_height, "px")),
@@ -770,7 +770,8 @@ server <- function(input, output, session) {
 
         output[[paste0("mod_plot_", ii)]] <- renderPlot({
           plot_obj()
-        }, res = 72)
+        }, res = 72)  # crispness comes from ragg; a higher res enlarges the text
+                      # without enlarging the chart, so the axis labels overlap
 
         output[[paste0("mod_dl_", ii)]] <- downloadHandler(
           filename = function() {
@@ -782,7 +783,7 @@ server <- function(input, output, session) {
             n_items <- attr(p, "n_items")
             if (is.null(n_items)) n_items <- length(q$levels %||% character(0))
             if (n_items == 0) n_items <- 6
-            h_in <- max(4.2, min(11, 1.6 + n_items * 0.55))
+            h_in <- max(4.2, min(18, 1.6 + n_items * 0.55))
             ggplot2::ggsave(filename = file, plot = p, device = ragg::agg_png,
                             width = 10, height = h_in, dpi = 200, bg = "white")
           }

@@ -139,7 +139,9 @@ plot_multi <- function(data, q, country_name, scope = "compare", base = "agency"
   ag   <- data[[base]]
   cols <- resolve_cols(q, ag)
   # excluir columnas "not sure" / "900" / texto libre "_1" del select_multiple
-  cols <- cols[!grepl("(_900|_not_sure|_1)$", cols)]
+  # (columns explicitly listed in q$options are real options, e.g. q11a_1,
+  # so they are never dropped by this filter)
+  cols <- cols[!grepl("(_900|_not_sure|_1)$", cols) | cols %in% names(q$options)]
   if (length(cols) == 0) return(empty_plot(q$title, "No data columns found"))
 
   # En esta encuesta cada columna de un select_multiple contiene la ETIQUETA de
@@ -615,7 +617,9 @@ table_single_sectors <- function(data, q, country_name,
 plot_multi_sectors <- function(data, q, country_name, base = "manager") {
   ag  <- add_sector_col(dplyr::filter(data[[base]], country == country_name))
   cols <- resolve_cols(q, ag)
-  cols <- cols[!grepl("(_900|_not_sure|_700|_1)$", cols)]
+  # (columns explicitly listed in q$options are real options, e.g. q11a_1,
+  # so they are never dropped by this filter)
+  cols <- cols[!grepl("(_900|_not_sure|_700|_1)$", cols) | cols %in% names(q$options)]
   if (length(cols) == 0 || nrow(ag) == 0)
     return(empty_plot(q$title, "No data for this country"))
 
@@ -648,6 +652,9 @@ plot_multi_sectors <- function(data, q, country_name, base = "manager") {
                   sel    = is_selected(resp)) |>
     dplyr::filter(sel)
 
+  # No sector selected any option -> message instead of a blank chart
+  if (nrow(long) == 0) return(no_response_plot(q, country_name, sectoral = TRUE))
+
   # cuenta sectores por opción
   totals <- long |>
     dplyr::group_by(option) |>
@@ -660,11 +667,11 @@ plot_multi_sectors <- function(data, q, country_name, base = "manager") {
   totals <- totals |> dplyr::mutate(option = factor(option, levels = opt_order),
                                     lbl = paste0(n_sectors, "/", dplyr::n_distinct(long$sector)))
 
-  ggplot(long, aes(x = .seg, y = option, fill = sector)) +
+  p <- ggplot(long, aes(x = .seg, y = option, fill = sector)) +
     geom_col(width = 0.72, color = "white", linewidth = 0.4) +
     geom_text(data = totals, aes(x = n_sectors, y = option, label = lbl),
               hjust = -0.2, size = 3.5, color = "grey20", inherit.aes = FALSE) +
-    scale_fill_brewer(palette = "Set2") +
+    scale_fill_brewer(palette = "Set2", labels = pretty_sector_lbl) +
     scale_x_continuous(breaks = seq(0, 6, 1),
                        expand = expansion(mult = c(0, 0.15))) +
     labs(title = paste(strwrap(q$title, width = 60), collapse = "\n"),
@@ -673,6 +680,8 @@ plot_multi_sectors <- function(data, q, country_name, base = "manager") {
          x = "Number of sectors", y = NULL, caption = CAP_TXT) +
     theme_dfbg() +
     theme(legend.position = "bottom")
+  attr(p, "n_items") <- nrow(totals)
+  p
 }
 
 # -- BARRIER: diverging bar chart por sector ----------------------------------
@@ -705,6 +714,8 @@ plot_barrier_sectors <- function(data, q, country_name, base = "manager") {
     ) |>
     dplyr::filter(!is.na(lvl)) |>
     dplyr::mutate(lvl = factor(lvl, levels = q$levels %||% names(PAL_BARRIER)))
+
+  if (nrow(long) == 0) return(no_response_plot(q, country_name, sectoral = TRUE))
 
   grp <- long |>
     dplyr::group_by(sector, constraint, lvl) |>
@@ -756,7 +767,7 @@ plot_barrier_sectors <- function(data, q, country_name, base = "manager") {
   grp <- grp |>
     dplyr::mutate(sector = factor(sector, levels = sector_order))
 
-  ggplot(grp, aes(x = pct_dir, y = sector, fill = lvl)) +
+  p <- ggplot(grp, aes(x = pct_dir, y = sector, fill = lvl)) +
     geom_col(width = 0.75, color = "white", linewidth = 0.3) +
     geom_vline(xintercept = 0, color = "grey40", linewidth = 0.5) +
     scale_fill_manual(values = q$palette %||% PAL_BARRIER, drop = FALSE,
@@ -765,6 +776,7 @@ plot_barrier_sectors <- function(data, q, country_name, base = "manager") {
       labels = function(x) paste0(abs(round(x)), "%"),
       expand = expansion(mult = c(0.05, 0.05))
     ) +
+    scale_y_discrete(labels = pretty_sector_lbl) +
     facet_wrap(~ constraint, ncol = 2) +
     labs(
       title    = paste(strwrap(q$title, width = 60), collapse = "\n"),
@@ -776,8 +788,19 @@ plot_barrier_sectors <- function(data, q, country_name, base = "manager") {
     theme_dfbg() +
     theme(
       strip.text      = element_text(size = 9, face = "bold", lineheight = 0.95),
+      axis.text.y     = element_text(size = 9),
+      panel.spacing.y = grid::unit(10, "pt"),
       legend.position = "bottom"
     )
+
+  # Chart height: this is a grid of small panels (2 per row), each with one
+  # bar per sector, so the height has to grow with BOTH the number of
+  # barriers and the number of sectors. Without this the panels got squashed
+  # into thin lines and the sector names overlapped.
+  n_sectors <- dplyr::n_distinct(grp$sector)
+  n_rows    <- ceiling(dplyr::n_distinct(grp$constraint) / 2)
+  attr(p, "n_items") <- n_rows * (n_sectors * 0.8 + 1.4) + 1
+  p
 }
 
 # Detecta las columnas de texto de una pregunta: usa q$cols si existen, y si no
@@ -829,6 +852,24 @@ empty_plot <- function(title, msg) {
     labs(title = title) + theme_void() +
     theme(plot.title = element_text(face = "bold", hjust = 0))
 }
+
+# Message shown instead of an empty chart when the economy has no usable
+# answer for a question (skipped it, it did not apply, or "Not sure").
+no_response_plot <- function(q, country_name, sectoral = FALSE) {
+  msg <- if (sectoral) {
+    paste0(country_name, " did not answer this question in any sector,\n",
+           "or answered \u201cNot sure\u201d.")
+  } else {
+    paste0(country_name, " did not answer this question,\n",
+           "or answered \u201cNot sure\u201d.")
+  }
+  p <- empty_plot(paste(strwrap(q$title, width = 60), collapse = "\n"), msg)
+  attr(p, "n_items") <- 2   # keeps the card short
+  p
+}
+
+# "PublicFinance" -> "Public Finance", "CivilService" -> "Civil Service"
+pretty_sector_lbl <- function(x) gsub("([a-z])([A-Z])", "\\1 \\2", x)
 
 # =============================================================================
 # Tarjetas de texto (estilo slide de categorías) para la pestaña "Text responses"
